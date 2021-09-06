@@ -8,27 +8,28 @@ declare(strict_types=1);
 
 namespace Drjele\SymfonyJsonForm\Form;
 
-use Doctrine\Common\Annotations\AnnotationReader;
 use Drjele\SymfonyJsonForm\Contract\DtoInterface;
 use Drjele\SymfonyJsonForm\Exception\Exception;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\PropertyInfo\Extractor\PhpDocExtractor;
-use Symfony\Component\PropertyInfo\Extractor\ReflectionExtractor;
-use Symfony\Component\PropertyInfo\PropertyInfoExtractor;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
-use Symfony\Component\Serializer\Mapping\Factory\ClassMetadataFactory;
-use Symfony\Component\Serializer\Mapping\Loader\AnnotationLoader;
-use Symfony\Component\Serializer\Normalizer\ArrayDenormalizer;
-use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
-use Symfony\Component\Serializer\Serializer;
+use Symfony\Component\Serializer\SerializerInterface;
 
 abstract class AbstractForm
 {
+    protected SerializerInterface $serializer;
+
     abstract protected function getDtoClass(): string;
 
     abstract protected function getRoute(): ?string;
 
     abstract protected function build(FormBuilder $formBuilder): void;
+
+    final public function setSerializer(SerializerInterface $serializer): self
+    {
+        $this->serializer = $serializer;
+
+        return $this;
+    }
 
     final public function render(DtoInterface $dto = null): array
     {
@@ -48,7 +49,7 @@ abstract class AbstractForm
 
         $this->build($formBuilder);
 
-        $data = $this->getSerializer()->normalize($dto);
+        $data = $this->serializer->normalize($dto);
 
         return $formBuilder->render($data);
     }
@@ -57,7 +58,7 @@ abstract class AbstractForm
     {
         $data = $this->getData($request);
 
-        return $this->getSerializer()->denormalize($data, $this->getDtoClass());
+        return $this->serializer->denormalize($data, $this->getDtoClass());
     }
 
     private function getData(Request $request): array
@@ -69,17 +70,6 @@ abstract class AbstractForm
         }
 
         return (new JsonEncoder())->decode($content, JsonEncoder::FORMAT)[$this->getName()] ?? [];
-    }
-
-    private function getSerializer(): Serializer
-    {
-        $classMetadataFactory = new ClassMetadataFactory(new AnnotationLoader(new AnnotationReader()));
-        $extractor = new PropertyInfoExtractor([], [new PhpDocExtractor(), new ReflectionExtractor()]);
-        $normalizers = [new ArrayDenormalizer(), new ObjectNormalizer($classMetadataFactory, null, null, $extractor)];
-
-        $encoders = [];
-
-        return new Serializer($normalizers, $encoders);
     }
 
     private function getName(): string

@@ -6,7 +6,6 @@
         "symfony",
         "json",
         "form"
-
     ],
     "homepage": "https://gitlab.com/drjele-symfony/json-form",
     "license": "MIT",
@@ -18,9 +17,11 @@
     ],
     "require": {
         "php": "^7.4|^8.0",
-        "symfony/http-foundation": "^5.3",
-        "symfony/property-info": "^5.3",
-        "symfony/serializer": "^5.3"
+        "symfony/config": "^4.0|^5.0",
+        "symfony/dependency-injection": "^4.0|^5.0",
+        "symfony/http-foundation": "^4.0|^5.0",
+        "symfony/property-info": "^4.0|^5.0",
+        "symfony/serializer": "^4.0|^5.0"
     },
     "require-dev": {
         "drjele/symfony-phpunit": "^1.0",
