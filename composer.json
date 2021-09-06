@@ -1,0 +1,60 @@
+{
+    "name": "drjele/symfony-json-form",
+    "type": "library",
+    "description": "Forms that serialize to json for frontend frameworks with symfony api backends",
+    "keywords": [
+        "symfony",
+        "json",
+        "form"
+
+    ],
+    "homepage": "https://gitlab.com/drjele-symfony/json-form",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Adrian Jeledintan",
+            "email": "adrian.jeledintan@gmail.com"
+        }
+    ],
+    "require": {
+        "php": "^7.4|^8.0",
+        "symfony/http-foundation": "^5.3",
+        "symfony/property-info": "^5.3",
+        "symfony/serializer": "^5.3"
+    },
+    "require-dev": {
+        "drjele/symfony-phpunit": "^1.0",
+        "friendsofphp/php-cs-fixer": "^3.1",
+        "squizlabs/php_codesniffer": "^3.6"
+    },
+    "autoload": {
+        "psr-4": {
+            "Drjele\\SymfonyJsonForm\\": "src/"
+        }
+    },
+    "scripts": {
+        "install-hooks": [
+            "[ $COMPOSER_DEV_MODE -eq 1 ] && rm -rf .git/hooks && ln -s ../scripts/git_hooks .git/hooks || exit 0"
+        ],
+        "post-install-cmd": [
+            "@install-hooks"
+        ],
+        "post-update-cmd": [
+            "@install-hooks"
+        ]
+    },
+    "minimum-stability": "stable",
+    "prefer-stable": true,
+    "config": {
+        "sort-packages": true
+    },
+    "extra": {
+        "exclude": [
+            "/scripts",
+            "/tests",
+            "/.php_cs.dist",
+            "/phpcs.xml.dist",
+            "/phpunit.xml.dist"
+        ]
+    }
+}
