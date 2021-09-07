@@ -4,6 +4,18 @@
 
 Any suggestions are welcomed.
 
+## Usage
+
+Add this to your **services.yaml**.
+
+```yaml
+services:
+    _instanceof:
+        Drjele\Symfony\JsonForm\Form\AbstractForm:
+            calls:
+                - [ setSerializer, [ '@serializer' ] ]
+```
+
 ## Todo
 
-* Unit tests
+* Unit tests.
