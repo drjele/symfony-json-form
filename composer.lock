@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "e365f327b8ba05aa336c29fd6e6565e9",
+    "content-hash": "b04181a08256ad9a7f654a344c2f58d6",
     "packages": [
         {
             "name": "psr/container",
@@ -2254,16 +2254,16 @@
         },
         {
             "name": "drjele/symfony-phpunit",
-            "version": "v1.0.7",
+            "version": "v2.0.0",
             "source": {
                 "type": "git",
                 "url": "https://gitlab.com/drjele-symfony/phpunit.git",
-                "reference": "512d3da2682decbc17e20c2631e96951b330f847"
+                "reference": "c2a3633661857e6a522848d226dd5cfe6cda4079"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://gitlab.com/api/v4/projects/drjele-symfony%2Fphpunit/repository/archive.zip?sha=512d3da2682decbc17e20c2631e96951b330f847",
-                "reference": "512d3da2682decbc17e20c2631e96951b330f847",
+                "url": "https://gitlab.com/api/v4/projects/drjele-symfony%2Fphpunit/repository/archive.zip?sha=c2a3633661857e6a522848d226dd5cfe6cda4079",
+                "reference": "c2a3633661857e6a522848d226dd5cfe6cda4079",
                 "shasum": ""
             },
             "require": {
@@ -2289,7 +2289,7 @@
             },
             "autoload": {
                 "psr-4": {
-                    "Drjele\\SymfonyPhpunit\\": "src/"
+                    "Drjele\\Symfony\\Phpunit\\": "src/"
                 }
             },
             "notification-url": "https://packagist.org/downloads/",
@@ -2311,7 +2311,7 @@
             "support": {
                 "issues": "https://gitlab.com/api/v4/projects/21712413/issues"
             },
-            "time": "2021-09-06T16:57:53+00:00"
+            "time": "2021-09-07T11:01:59+00:00"
         },
         {
             "name": "friendsofphp/php-cs-fixer",
