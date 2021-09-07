@@ -6,17 +6,17 @@ declare(strict_types=1);
  * Copyright (c) Adrian Jeledintan
  */
 
-namespace Drjele\SymfonyJsonForm\Traits;
+namespace Drjele\Symfony\JsonForm\Traits;
 
-use Drjele\SymfonyJsonForm\Element\AbstractElement;
-use Drjele\SymfonyJsonForm\Element\ArrayElement;
-use Drjele\SymfonyJsonForm\Element\AutocompleteElement;
-use Drjele\SymfonyJsonForm\Element\BoolElement;
-use Drjele\SymfonyJsonForm\Element\CollectionElement;
-use Drjele\SymfonyJsonForm\Element\DateElement;
-use Drjele\SymfonyJsonForm\Element\IntegerElement;
-use Drjele\SymfonyJsonForm\Element\StringElement;
-use Drjele\SymfonyJsonForm\Exception\Exception;
+use Drjele\Symfony\JsonForm\Element\AbstractElement;
+use Drjele\Symfony\JsonForm\Element\ArrayElement;
+use Drjele\Symfony\JsonForm\Element\AutocompleteElement;
+use Drjele\Symfony\JsonForm\Element\BoolElement;
+use Drjele\Symfony\JsonForm\Element\CollectionElement;
+use Drjele\Symfony\JsonForm\Element\DateElement;
+use Drjele\Symfony\JsonForm\Element\IntegerElement;
+use Drjele\Symfony\JsonForm\Element\StringElement;
+use Drjele\Symfony\JsonForm\Exception\Exception;
 
 trait ElementCollectionTrait
 {

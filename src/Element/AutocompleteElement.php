@@ -6,9 +6,9 @@ declare(strict_types=1);
  * Copyright (c) Adrian Jeledintan
  */
 
-namespace Drjele\SymfonyJsonForm\Element;
+namespace Drjele\Symfony\JsonForm\Element;
 
-use Drjele\SymfonyJsonForm\Exception\Exception;
+use Drjele\Symfony\JsonForm\Exception\Exception;
 
 final class AutocompleteElement extends AbstractElement
 {

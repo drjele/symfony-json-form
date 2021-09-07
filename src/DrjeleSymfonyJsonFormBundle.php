@@ -6,7 +6,7 @@ declare(strict_types=1);
  * Copyright (c) Adrian Jeledintan
  */
 
-namespace Vivre\DtoCommunication\Serializer;
+namespace Drjele\Symfony\JsonForm;
 
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 

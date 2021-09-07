@@ -6,7 +6,7 @@ declare(strict_types=1);
  * Copyright (c) Adrian Jeledintan
  */
 
-namespace Drjele\SymfonyJsonForm\Element;
+namespace Drjele\Symfony\JsonForm\Element;
 
 final class BoolElement extends AbstractElement
 {

@@ -6,7 +6,7 @@ declare(strict_types=1);
  * Copyright (c) Adrian Jeledintan
  */
 
-namespace Drjele\SymfonyJsonForm\Contract;
+namespace Drjele\Symfony\JsonForm\Contract;
 
 interface DtoInterface
 {

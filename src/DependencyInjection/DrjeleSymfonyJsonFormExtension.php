@@ -6,7 +6,7 @@ declare(strict_types=1);
  * Copyright (c) Adrian Jeledintan
  */
 
-namespace Vivre\DtoCommunication\Serializer\DependencyInjection;
+namespace Drjele\Symfony\JsonForm\DependencyInjection;
 
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;

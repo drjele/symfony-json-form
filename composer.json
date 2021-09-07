@@ -31,7 +31,12 @@
     },
     "autoload": {
         "psr-4": {
-            "Drjele\\SymfonyJsonForm\\": "src/"
+            "Drjele\\Symfony\\JsonForm\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Drjele\\Symfony\\JsonForm\\Test\\": "tests/"
         }
     },
     "scripts": {

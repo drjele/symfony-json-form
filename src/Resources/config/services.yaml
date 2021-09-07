@@ -1,4 +1,4 @@
 services:
-    Drjele\SymfonyJsonForm\Form\AbstractForm:
+    Drjele\Symfony\JsonForm\Form\AbstractForm:
         calls:
             - [ setSerializer, [ '@serializer' ] ]

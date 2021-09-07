@@ -6,9 +6,9 @@ declare(strict_types=1);
  * Copyright (c) Adrian Jeledintan
  */
 
-namespace Drjele\SymfonyJsonForm\Form;
+namespace Drjele\Symfony\JsonForm\Form;
 
-use Drjele\SymfonyJsonForm\Traits\ElementCollectionTrait;
+use Drjele\Symfony\JsonForm\Traits\ElementCollectionTrait;
 
 final class FormBuilder
 {

@@ -6,10 +6,10 @@ declare(strict_types=1);
  * Copyright (c) Adrian Jeledintan
  */
 
-namespace Drjele\SymfonyJsonForm\Form;
+namespace Drjele\Symfony\JsonForm\Form;
 
-use Drjele\SymfonyJsonForm\Contract\DtoInterface;
-use Drjele\SymfonyJsonForm\Exception\Exception;
+use Drjele\Symfony\JsonForm\Contract\DtoInterface;
+use Drjele\Symfony\JsonForm\Exception\Exception;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\Serializer\SerializerInterface;
