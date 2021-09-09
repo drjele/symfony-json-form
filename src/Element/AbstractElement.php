@@ -57,10 +57,10 @@ abstract class AbstractElement
     {
         if (null !== $message) {
             throw new Exception(
-                \sprintf('invalid value for "%s" with type "%s": %s', $this->name, $this->getType(), $message)
+                \sprintf('invalid value for `%s` with type `%s`: %s', $this->name, $this->getType(), $message)
             );
         }
 
-        throw new Exception(\sprintf('invalid value for "%s" with type "%s"', $this->name, $this->getType()));
+        throw new Exception(\sprintf('invalid value for `%s` with type `%s`', $this->name, $this->getType()));
     }
 }

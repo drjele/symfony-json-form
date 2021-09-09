@@ -26,7 +26,7 @@ final class ArrayElement extends AbstractElement
     public function setDataType(string $dataType): self
     {
         if (!\in_array($dataType, static::DATA_TYPES, true)) {
-            throw new Exception(\sprintf('invalid data type "%s"', $dataType));
+            throw new Exception(\sprintf('invalid data type `%s`', $dataType));
         }
 
         $this->dataType = $dataType;
@@ -37,7 +37,7 @@ final class ArrayElement extends AbstractElement
     public function setMode(string $mode): self
     {
         if (!\in_array($mode, static::MODES, true)) {
-            throw new Exception(\sprintf('invalid mode "%s"', $mode));
+            throw new Exception(\sprintf('invalid mode `%s`', $mode));
         }
 
         $this->mode = $mode;

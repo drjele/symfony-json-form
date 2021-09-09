@@ -42,7 +42,7 @@ abstract class AbstractForm
         $formName = $this->getName();
 
         if (\get_class($dto) !== $this->getDtoClass()) {
-            throw new Exception(\sprintf('invalid dto class for form "%s"', $formName));
+            throw new Exception(\sprintf('invalid dto class for form `%s`', $formName));
         }
 
         $formBuilder = new FormBuilder($formName, $this->getRoute());

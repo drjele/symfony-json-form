@@ -114,7 +114,7 @@ trait ElementCollectionTrait
     private function addElement(AbstractElement $element): self
     {
         if (isset($this->elements[$element->getName()])) {
-            throw new Exception(\sprintf('duplicate element name "%s"', $element->getName()));
+            throw new Exception(\sprintf('duplicate element name `%s`', $element->getName()));
         }
 
         $this->elements[$element->getName()] = $element;
