@@ -10,6 +10,7 @@ namespace Drjele\Symfony\JsonForm\Form;
 
 use Drjele\Symfony\JsonForm\Contract\DtoInterface;
 use Drjele\Symfony\JsonForm\Exception\Exception;
+use ReflectionClass;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\Serializer\SerializerInterface;
@@ -74,7 +75,7 @@ abstract class AbstractForm
 
     private function getName(): string
     {
-        $className = \lcfirst((new \ReflectionClass(static::class))->getShortName());
+        $className = \lcfirst((new ReflectionClass(static::class))->getShortName());
 
         $position = \strrpos($className, 'Service');
 
