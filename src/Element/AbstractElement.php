@@ -8,7 +8,7 @@ declare(strict_types=1);
 
 namespace Drjele\Symfony\JsonForm\Element;
 
-use Drjele\SymfonyPhpunit\Exception\Exception;
+use Drjele\Symfony\JsonForm\Exception\Exception;
 
 abstract class AbstractElement
 {
