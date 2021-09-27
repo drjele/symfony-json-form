@@ -21,7 +21,7 @@ final class BoolElement extends AbstractElement
         ];
     }
 
-    protected function getType(): string
+    protected function getDataType(): string
     {
         return 'bool';
     }

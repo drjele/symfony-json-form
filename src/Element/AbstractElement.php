@@ -28,15 +28,17 @@ abstract class AbstractElement
 
     private string $name;
     private string $label;
+    private ?string $frontEndType;
 
     abstract public function render($data): array;
 
-    abstract protected function getType(): string;
+    abstract protected function getDataType(): string;
 
-    final public function __construct(string $name, string $label)
+    final public function __construct(string $name, string $label, string $frontEndType = null)
     {
         $this->name = $name;
         $this->label = $label;
+        $this->frontEndType = $frontEndType;
     }
 
     final public function getName(): ?string
@@ -47,9 +49,10 @@ abstract class AbstractElement
     final protected function renderBase(): array
     {
         return [
-            'type' => $this->getType(),
             'name' => $this->name,
             'label' => $this->label,
+            'dataType' => $this->getDataType(),
+            'frontEndType' => $this->frontEndType,
         ];
     }
 
@@ -57,10 +60,10 @@ abstract class AbstractElement
     {
         if (null !== $message) {
             throw new Exception(
-                \sprintf('invalid value for `%s` with type `%s`: %s', $this->name, $this->getType(), $message)
+                \sprintf('invalid value for `%s` with type `%s`: %s', $this->name, $this->getDataType(), $message)
             );
         }
 
-        throw new Exception(\sprintf('invalid value for `%s` with type `%s`', $this->name, $this->getType()));
+        throw new Exception(\sprintf('invalid value for `%s` with type `%s`', $this->name, $this->getDataType()));
     }
 }

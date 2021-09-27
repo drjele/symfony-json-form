@@ -40,7 +40,7 @@ final class IntegerElement extends AbstractElement
         ];
     }
 
-    protected function getType(): string
+    protected function getDataType(): string
     {
         return 'integer';
     }

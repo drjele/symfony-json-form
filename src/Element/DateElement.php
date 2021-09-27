@@ -33,7 +33,7 @@ final class DateElement extends AbstractElement
         ];
     }
 
-    protected function getType(): string
+    protected function getDataType(): string
     {
         return 'date';
     }

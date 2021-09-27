@@ -14,7 +14,7 @@ final class CollectionElement extends AbstractElement
 {
     use ElementCollectionTrait;
 
-    protected function getType(): string
+    protected function getDataType(): string
     {
         return 'collection';
     }

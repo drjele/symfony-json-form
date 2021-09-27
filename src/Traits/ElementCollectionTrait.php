@@ -28,9 +28,10 @@ trait ElementCollectionTrait
         string $label,
         array $options,
         string $dataType,
-        string $mode
+        string $mode,
+        string $frontEndType = null
     ): self {
-        $element = new ArrayElement($name, $label);
+        $element = new ArrayElement($name, $label, $frontEndType);
 
         $element->setOptions($options)
             ->setDataType($dataType)
@@ -47,9 +48,10 @@ trait ElementCollectionTrait
         string $route,
         string $dataType,
         string $mode,
-        string $queryParam = 'query'
+        string $queryParam = 'query',
+        string $frontEndType = null
     ): self {
-        $element = new AutocompleteElement($name, $label);
+        $element = new AutocompleteElement($name, $label, $frontEndType);
 
         $element->setRoute($route)
             ->setQueryParam($queryParam)
@@ -61,27 +63,32 @@ trait ElementCollectionTrait
         return $this;
     }
 
-    public function addBool(string $name, string $label): self
+    public function addBool(string $name, string $label, string $frontEndType = null): self
     {
-        $element = new BoolElement($name, $label);
+        $element = new BoolElement($name, $label, $frontEndType);
 
         $this->addElement($element);
 
         return $this;
     }
 
-    public function addCollection(string $name, string $label): CollectionElement
+    public function addCollection(string $name, string $label, string $frontEndType = null): CollectionElement
     {
-        $collection = new CollectionElement($name, $label);
+        $collection = new CollectionElement($name, $label, $frontEndType);
 
         $this->addElement($collection);
 
         return $collection;
     }
 
-    public function addInteger(string $name, string $label, int $min = null, int $max = null): self
-    {
-        $element = new IntegerElement($name, $label);
+    public function addInteger(
+        string $name,
+        string $label,
+        int $min = null,
+        int $max = null,
+        string $frontEndType = null
+    ): self {
+        $element = new IntegerElement($name, $label, $frontEndType);
 
         $element->setMin($min)
             ->setMax($max);
@@ -91,18 +98,22 @@ trait ElementCollectionTrait
         return $this;
     }
 
-    public function addString(string $name, string $label): self
+    public function addString(string $name, string $label, string $frontEndType = null): self
     {
-        $element = new StringElement($name, $label);
+        $element = new StringElement($name, $label, $frontEndType);
 
         $this->addElement($element);
 
         return $this;
     }
 
-    public function addDate(string $name, string $label, string $format = DateElement::FORMAT_Y_M_D): self
-    {
-        $element = new DateElement($name, $label);
+    public function addDate(
+        string $name,
+        string $label,
+        string $format = DateElement::FORMAT_Y_M_D,
+        string $frontEndType = null
+    ): self {
+        $element = new DateElement($name, $label, $frontEndType);
 
         $element->setFormat($format);
 
