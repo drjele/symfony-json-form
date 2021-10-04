@@ -8,33 +8,38 @@ declare(strict_types=1);
 
 namespace Drjele\Symfony\JsonForm\Element;
 
+use DateTime;
+use Drjele\Symfony\JsonForm\Exception\InvalidValueException;
+
 final class DateElement extends AbstractElement
 {
     public const FORMAT_Y_M_D = 'Y-m-d';
+    public const FORMAT_M_D_Y = 'd-m-Y';
+    public const FORMAT_Y_M_D_H_I_S = 'Y-m-d H:i:s';
+    public const FORMAT_Y_M_D_H_I = 'Y-m-d H:i';
 
     private string $format;
 
-    public function setFormat(string $format): self
+    public function __construct(string $name, string $format = self::FORMAT_Y_M_D)
     {
+        $this->name = $name;
         $this->format = $format;
-
-        return $this;
     }
 
-    public function render($value): array
+    protected function getType(): string
     {
-        if (null !== $value && !\is_string($value)) {
-            $this->throwInvalidValueException();
+        return 'date';
+    }
+
+    protected function renderValue($value): array
+    {
+        if (null !== $value && !\is_string($value) && false === DateTime::createFromFormat($this->format, $value)) {
+            throw new InvalidValueException($this->name, $value);
         }
 
-        return $this->renderBase() + [
+        return [
             'format' => $this->format,
             'value' => $value,
         ];
-    }
-
-    protected function getDataType(): string
-    {
-        return 'date';
     }
 }

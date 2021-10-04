@@ -6,24 +6,26 @@ declare(strict_types=1);
  * Copyright (c) Adrian Jeledintan
  */
 
-namespace Drjele\Symfony\JsonForm\Form;
+namespace Drjele\Symfony\JsonForm\Service;
 
 use Drjele\Symfony\JsonForm\Contract\DtoInterface;
 use Drjele\Symfony\JsonForm\Exception\Exception;
+use Drjele\Symfony\JsonForm\Form\Action;
+use Drjele\Symfony\JsonForm\Form\Form;
 use ReflectionClass;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\Serializer\SerializerInterface;
 
-abstract class AbstractForm
+abstract class AbstractFormService
 {
     protected SerializerInterface $serializer;
 
     abstract protected function getDtoClass(): string;
 
-    abstract protected function getRoute(): ?string;
+    abstract protected function getAction(): Action;
 
-    abstract protected function build(FormBuilder $formBuilder): void;
+    abstract protected function build(Form $form): void;
 
     final public function setSerializer(SerializerInterface $serializer): self
     {
@@ -46,13 +48,13 @@ abstract class AbstractForm
             throw new Exception(\sprintf('invalid dto class for form `%s`', $formName));
         }
 
-        $formBuilder = new FormBuilder($formName, $this->getRoute());
+        $form = new Form($formName, $this->getAction());
 
-        $this->build($formBuilder);
+        $this->build($form);
 
         $data = $this->serializer->normalize($dto);
 
-        return $formBuilder->render($data);
+        return $form->render($data);
     }
 
     final public function handle(Request $request): DtoInterface
@@ -62,18 +64,31 @@ abstract class AbstractForm
         return $this->serializer->denormalize($data, $this->getDtoClass());
     }
 
-    private function getData(Request $request): array
+    protected function getData(Request $request): array
     {
-        $content = $request->getContent();
+        $data = [];
 
-        if (empty($content)) {
-            return [];
+        switch ($request->getMethod()) {
+            case Request::METHOD_GET:
+                $data = $request->query->all();
+                break;
+            case Request::METHOD_POST:
+            case Request::METHOD_PUT:
+            case Request::METHOD_PATCH:
+                $content = $request->getContent();
+
+                if ($content) {
+                    (new JsonEncoder())->decode($content, JsonEncoder::FORMAT)[$this->getName()] ?? [];
+                }
+                break;
+            default:
+                throw new Exception('can not handle `%s` request method', $request->getMethod());
         }
 
-        return (new JsonEncoder())->decode($content, JsonEncoder::FORMAT)[$this->getName()] ?? [];
+        return $data;
     }
 
-    private function getName(): string
+    protected function getName(): string
     {
         $className = \lcfirst((new ReflectionClass(static::class))->getShortName());
 

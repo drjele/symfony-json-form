@@ -11,18 +11,21 @@ namespace Drjele\Symfony\JsonForm\Element;
 use Drjele\Symfony\JsonForm\Exception\InvalidValueException;
 use Drjele\Symfony\JsonForm\Traits\ElementCollectionTrait;
 
-final class CollectionElement extends AbstractElement
+final class PrototypeCollectionElement extends AbstractElement
 {
     use ElementCollectionTrait;
 
-    public function __construct(string $name)
+    private bool $renderDefault;
+
+    public function __construct(string $name, bool $renderDefault = true)
     {
         $this->name = $name;
+        $this->renderDefault = $renderDefault;
     }
 
     public function getType(): string
     {
-        return 'collection';
+        return 'prototypeCollection';
     }
 
     public function renderValue($value): array
@@ -31,8 +34,18 @@ final class CollectionElement extends AbstractElement
             throw new InvalidValueException($this->name, $value);
         }
 
+        $elements = [];
+
+        foreach ($value as $v) {
+            $elements[] = $this->renderElements($v);
+        }
+
+        if (true === $this->renderDefault && null === $value) {
+            $elements[] = $this->renderElements([]);
+        }
+
         return [
-            'elements' => $this->renderElements($value ?? []),
+            'elements' => $elements,
         ];
     }
 }

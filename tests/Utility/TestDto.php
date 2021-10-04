@@ -17,7 +17,7 @@ class TestDto implements DtoInterface
     private array $array;
     private bool $bool;
     private string $date;
-    private int $integer;
+    private int $number;
     private string $string;
 
     public function __construct()
@@ -25,7 +25,7 @@ class TestDto implements DtoInterface
         $this->array = ['test'];
         $this->bool = true;
         $this->date = (new DateTime())->format(DateElement::FORMAT_Y_M_D);
-        $this->integer = 1;
+        $this->number = 1;
         $this->string = 'test';
     }
 
@@ -44,9 +44,9 @@ class TestDto implements DtoInterface
         return $this->date;
     }
 
-    public function getInteger(): int
+    public function getNumber(): int
     {
-        return $this->integer;
+        return $this->number;
     }
 
     public function getString(): string
