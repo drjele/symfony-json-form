@@ -8,68 +8,54 @@ declare(strict_types=1);
 
 namespace Drjele\Symfony\JsonForm\Element;
 
-use Drjele\Symfony\JsonForm\Exception\Exception;
+use Drjele\Symfony\JsonForm\Exception\InvalidModeException;
 
 final class AutocompleteElement extends AbstractElement
 {
+    public const MODE_SINGLE = 'single';
+    public const MODE_MULTIPLE = 'multiple';
+
+    public const MODES = [
+        self::MODE_SINGLE,
+        self::MODE_MULTIPLE,
+    ];
+
     private string $route;
-    private string $queryParam;
-    private string $dataType;
+    private string $parameter;
     private string $mode;
 
-    public function setRoute(string $route): self
-    {
-        $this->route = $route;
-
-        return $this;
-    }
-
-    public function setQueryParam(string $queryParam): self
-    {
-        $this->queryParam = $queryParam;
-
-        return $this;
-    }
-
-    public function setDataType(string $dataType): self
-    {
-        if (!\in_array($dataType, static::DATA_TYPES, true)) {
-            throw new Exception(\sprintf('invalid data type `%s`', $dataType));
-        }
-
-        $this->dataType = $dataType;
-
-        return $this;
-    }
-
-    public function setMode(string $mode): self
-    {
+    public function __construct(
+        string $name,
+        string $route,
+        string $parameter = 'query',
+        string $mode = self::MODE_SINGLE
+    ) {
         if (!\in_array($mode, static::MODES, true)) {
-            throw new Exception(\sprintf('invalid mode `%s`', $mode));
+            throw new InvalidModeException($name, $mode, static::MODES);
         }
 
+        $this->name = $name;
+        $this->route = $route;
+        $this->parameter = $parameter;
         $this->mode = $mode;
-
-        return $this;
     }
 
-    public function render($values): array
-    {
-        if (null !== $values) {
-            $values = (array)$values;
-        }
-
-        return $this->renderBase() + [
-            'route' => $this->route,
-            'queryParam' => $this->queryParam,
-            'values' => $values,
-            'dataType' => $this->dataType,
-            'mode' => $this->mode,
-        ];
-    }
-
-    protected function getDataType(): string
+    protected function getType(): string
     {
         return 'autocomplete';
+    }
+
+    protected function renderValue($value): array
+    {
+        if (null !== $value) {
+            $value = (array)$value;
+        }
+
+        return [
+            'route' => $this->route,
+            'parameter' => $this->parameter,
+            'mode' => $this->mode,
+            'value' => $value,
+        ];
     }
 }

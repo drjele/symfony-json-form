@@ -8,21 +8,28 @@ declare(strict_types=1);
 
 namespace Drjele\Symfony\JsonForm\Element;
 
+use Drjele\Symfony\JsonForm\Exception\InvalidValueException;
+
 final class StringElement extends AbstractElement
 {
-    public function render($value): array
+    public function __construct(string $name)
     {
-        if (null !== $value && !\is_string($value)) {
-            $this->throwInvalidValueException();
-        }
-
-        return $this->renderBase() + [
-            'value' => $value,
-        ];
+        $this->name = $name;
     }
 
-    protected function getDataType(): string
+    protected function getType(): string
     {
         return 'string';
+    }
+
+    protected function renderValue($value): array
+    {
+        if (null !== $value && !\is_string($value)) {
+            throw new InvalidValueException($this->name, $value);
+        }
+
+        return [
+            'value' => $value,
+        ];
     }
 }

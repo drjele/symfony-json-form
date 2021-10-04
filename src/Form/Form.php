@@ -10,31 +10,25 @@ namespace Drjele\Symfony\JsonForm\Form;
 
 use Drjele\Symfony\JsonForm\Traits\ElementCollectionTrait;
 
-final class FormBuilder
+final class Form
 {
     use ElementCollectionTrait;
 
     private string $name;
-    private string $route;
+    private Action $action;
 
-    public function __construct(string $name, string $route)
+    public function __construct(string $name, Action $action)
     {
         $this->name = $name;
-        $this->route = $route;
+        $this->action = $action;
     }
 
     public function render($data): array
     {
-        $elements = [];
-
-        foreach ($this->elements as $element) {
-            $elements[] = $element->render($data[$element->getName()] ?? null);
-        }
-
         return [
             'name' => $this->name,
-            'route' => $this->route,
-            'elements' => $elements,
+            'action' => $this->action->render(),
+            'elements' => $this->renderElements($data),
         ];
     }
 }

@@ -8,66 +8,54 @@ declare(strict_types=1);
 
 namespace Drjele\Symfony\JsonForm\Element;
 
-use Drjele\Symfony\JsonForm\Exception\Exception;
+use Drjele\Symfony\JsonForm\Exception\InvalidModeException;
+use Drjele\Symfony\JsonForm\Exception\InvalidValueException;
 
 final class ArrayElement extends AbstractElement
 {
+    public const MODE_SINGLE = 'single';
+    public const MODE_MULTIPLE = 'multiple';
+
+    public const MODES = [
+        self::MODE_SINGLE,
+        self::MODE_MULTIPLE,
+    ];
+
     private array $options;
-    private string $dataType;
     private string $mode;
 
-    public function setOptions(array $options): self
-    {
-        $this->options = $options;
-
-        return $this;
-    }
-
-    public function setDataType(string $dataType): self
-    {
-        if (!\in_array($dataType, static::DATA_TYPES, true)) {
-            throw new Exception(\sprintf('invalid data type `%s`', $dataType));
-        }
-
-        $this->dataType = $dataType;
-
-        return $this;
-    }
-
-    public function setMode(string $mode): self
+    public function __construct(string $name, array $options, string $mode = self::MODE_SINGLE)
     {
         if (!\in_array($mode, static::MODES, true)) {
-            throw new Exception(\sprintf('invalid mode `%s`', $mode));
+            throw new InvalidModeException($name, $mode, static::MODES);
         }
 
+        $this->name = $name;
+        $this->options = $options;
         $this->mode = $mode;
-
-        return $this;
     }
 
-    public function render($values): array
+    protected function getType(): string
     {
-        if (null !== $values) {
-            $values = (array)$values;
+        return 'array';
+    }
+
+    protected function renderValue($value): array
+    {
+        if (null !== $value) {
+            $value = (array)$value;
 
             /* @todo refactor for multi level array */
-            if ($diff = \array_diff($values, \array_keys($this->options))) {
-                $this->throwInvalidValueException();
+            if ($diff = \array_diff($value, \array_keys($this->options))) {
+                throw new InvalidValueException($this->name, $diff);
             }
-
             /* @todo add more validations */
         }
 
-        return $this->renderBase() + [
+        return [
             'options' => $this->options,
-            'values' => $values,
-            'dataType' => $this->dataType,
             'mode' => $this->mode,
+            'value' => $value,
         ];
-    }
-
-    protected function getDataType(): string
-    {
-        return 'array';
     }
 }

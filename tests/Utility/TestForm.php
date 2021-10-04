@@ -8,61 +8,47 @@ declare(strict_types=1);
 
 namespace Drjele\Symfony\JsonForm\Test\Utility;
 
-use Drjele\Symfony\JsonForm\Element\AbstractElement;
-use Drjele\Symfony\JsonForm\Form\AbstractForm;
-use Drjele\Symfony\JsonForm\Form\FormBuilder;
+use Drjele\Symfony\JsonForm\Element\ArrayElement;
+use Drjele\Symfony\JsonForm\Element\AutocompleteElement;
+use Drjele\Symfony\JsonForm\Element\BoolElement;
+use Drjele\Symfony\JsonForm\Element\DateElement;
+use Drjele\Symfony\JsonForm\Element\NumberElement;
+use Drjele\Symfony\JsonForm\Element\StringElement;
+use Drjele\Symfony\JsonForm\Form\Action;
+use Drjele\Symfony\JsonForm\Form\Form;
+use Drjele\Symfony\JsonForm\Service\AbstractFormService;
 
-class TestForm extends AbstractForm
+class TestForm extends AbstractFormService
 {
     protected function getDtoClass(): string
     {
         return TestDto::class;
     }
 
-    protected function getRoute(): ?string
+    protected function getAction(): Action
     {
-        return 'test';
+        return new Action('test');
     }
 
-    protected function build(FormBuilder $formBuilder): void
+    protected function build(Form $form): void
     {
-        $formBuilder->addArray(
-            'array',
-            'array',
-            ['test' => 'test'],
-            AbstractElement::DATA_TYPE_STRING,
-            AbstractElement::MODE_SINGLE
+        $form->addElement(
+            new ArrayElement(
+                'array',
+                ['test' => 'test'],
+                ArrayElement::MODE_SINGLE,
+            )
         )
-            ->addAutocomplete(
-                'autocomplete',
-                'autocomplete',
-                'autocomplete-route',
-                AbstractElement::DATA_TYPE_STRING,
-                AbstractElement::MODE_SINGLE
+            ->addElement(
+                new AutocompleteElement(
+                    'autocomplete',
+                    'autocomplete-route',
+                    ArrayElement::MODE_SINGLE
+                )
             )
-            ->addBool('bool', 'bool')
-            ->addDate('date', 'date')
-            ->addInteger('integer', 'integer', 0, 100)
-            ->addString('string', 'string');
-
-        $formBuilder->addCollection('collection', 'collection')
-            ->addArray(
-                'array',
-                'array',
-                ['key' => 'value'],
-                AbstractElement::DATA_TYPE_STRING,
-                AbstractElement::MODE_SINGLE
-            )
-            ->addAutocomplete(
-                'autocomplete',
-                'autocomplete',
-                'autocomplete-route',
-                AbstractElement::DATA_TYPE_STRING,
-                AbstractElement::MODE_SINGLE
-            )
-            ->addBool('bool', 'bool')
-            ->addDate('date', 'date')
-            ->addInteger('integer', 'integer', 0, 100)
-            ->addString('string', 'string');
+            ->addElement(new BoolElement('bool'))
+            ->addElement(new DateElement('date'))
+            ->addElement(new NumberElement('number', 1, 10, 1))
+            ->addElement(new StringElement('string'));
     }
 }
