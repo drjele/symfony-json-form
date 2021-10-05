@@ -14,7 +14,8 @@ use Drjele\Symfony\JsonForm\Exception\InvalidValueException;
 final class DateElement extends AbstractElement
 {
     public const FORMAT_Y_M_D = 'Y-m-d';
-    public const FORMAT_M_D_Y = 'd-m-Y';
+    public const FORMAT_M_D_Y = 'm-d-Y';
+    public const FORMAT_D_M_Y = 'd-m-Y';
     public const FORMAT_Y_M_D_H_I_S = 'Y-m-d H:i:s';
     public const FORMAT_Y_M_D_H_I = 'Y-m-d H:i';
 
