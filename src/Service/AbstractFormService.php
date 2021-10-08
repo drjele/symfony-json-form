@@ -15,6 +15,7 @@ use Drjele\Symfony\JsonForm\Form\Form;
 use ReflectionClass;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
+use Symfony\Component\Serializer\Normalizer\AbstractObjectNormalizer;
 use Symfony\Component\Serializer\SerializerInterface;
 
 abstract class AbstractFormService
@@ -59,18 +60,20 @@ abstract class AbstractFormService
 
     final public function handle(Request $request): DtoInterface
     {
-        $data = $this->getData($request);
+        [$data, $context] = $this->getDataAndContext($request);
 
-        return $this->serializer->denormalize($data, $this->getDtoClass());
+        return $this->serializer->denormalize($data, $this->getDtoClass(), null, $context);
     }
 
-    protected function getData(Request $request): array
+    protected function getDataAndContext(Request $request): array
     {
         $data = [];
+        $context = [];
 
         switch ($request->getMethod()) {
             case Request::METHOD_GET:
                 $data = $request->query->all();
+                $context = [AbstractObjectNormalizer::DISABLE_TYPE_ENFORCEMENT => true];
                 break;
             case Request::METHOD_POST:
             case Request::METHOD_PUT:
@@ -85,7 +88,7 @@ abstract class AbstractFormService
                 throw new Exception('can not handle `%s` request method', $request->getMethod());
         }
 
-        return $data;
+        return [$data, $context];
     }
 
     protected function getName(): string
