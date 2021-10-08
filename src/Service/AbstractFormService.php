@@ -78,7 +78,7 @@ abstract class AbstractFormService
                 $content = $request->getContent();
 
                 if ($content) {
-                    (new JsonEncoder())->decode($content, JsonEncoder::FORMAT)[$this->getName()] ?? [];
+                    $data = (new JsonEncoder())->decode($content, JsonEncoder::FORMAT)[$this->getName()] ?? [];
                 }
                 break;
             default:
