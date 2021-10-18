@@ -35,7 +35,7 @@ abstract class AbstractFormService
         return $this;
     }
 
-    final public function render(DtoInterface $dto = null): array
+    final public function render(DtoInterface $dto = null, Action $action = null): array
     {
         if (null === $dto) {
             $dtoClass = $this->getDtoClass();
@@ -49,7 +49,7 @@ abstract class AbstractFormService
             throw new Exception(\sprintf('invalid dto class for form `%s`', $formName));
         }
 
-        $form = new Form($formName, $this->getAction());
+        $form = new Form($formName, $action ?? $this->getAction());
 
         $this->build($form);
 

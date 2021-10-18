@@ -36,7 +36,7 @@ final class PrototypeCollectionElement extends AbstractElement
 
         $elements = [];
 
-        foreach ($value ?? [] as $v) {
+        foreach (($value ?? []) as $v) {
             $elements[] = $this->renderElements($v);
         }
 

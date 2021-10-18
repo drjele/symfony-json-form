@@ -13,6 +13,7 @@ use Drjele\Symfony\JsonForm\Exception\Exception;
 
 trait ElementCollectionTrait
 {
+    /** @var AbstractElement[] */
     private array $elements;
 
     public function addElement(AbstractElement $element): self
