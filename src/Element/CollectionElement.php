@@ -11,7 +11,7 @@ namespace Drjele\Symfony\JsonForm\Element;
 use Drjele\Symfony\JsonForm\Exception\InvalidValueException;
 use Drjele\Symfony\JsonForm\Traits\ElementCollectionTrait;
 
-final class CollectionElement extends AbstractElement
+class CollectionElement extends AbstractElement
 {
     use ElementCollectionTrait;
 

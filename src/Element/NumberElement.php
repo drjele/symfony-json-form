@@ -10,22 +10,25 @@ namespace Drjele\Symfony\JsonForm\Element;
 
 use Drjele\Symfony\JsonForm\Exception\InvalidValueException;
 
-final class NumberElement extends AbstractElement
+class NumberElement extends AbstractElement
 {
-    private ?int $min;
-    private ?int $max;
+    private ?float $min;
+    private ?float $max;
     private ?float $step;
+    private bool $required;
 
     public function __construct(
         string $name,
-        int $min = null,
-        int $max = null,
-        float $step = null
+        float $min = null,
+        float $max = null,
+        float $step = null,
+        bool $required = true
     ) {
         $this->name = $name;
         $this->min = $min;
         $this->max = $max;
         $this->step = $step;
+        $this->required = $required;
     }
 
     protected function getType(): string
@@ -43,6 +46,7 @@ final class NumberElement extends AbstractElement
             'min' => $this->min,
             'max' => $this->max,
             'step' => $this->step,
+            'required' => $this->required,
             'value' => $value,
         ];
     }

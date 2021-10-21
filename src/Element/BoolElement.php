@@ -10,11 +10,16 @@ namespace Drjele\Symfony\JsonForm\Element;
 
 use Drjele\Symfony\JsonForm\Exception\InvalidValueException;
 
-final class BoolElement extends AbstractElement
+class BoolElement extends AbstractElement
 {
-    public function __construct(string $name)
-    {
+    private bool $required;
+
+    public function __construct(
+        string $name,
+        bool $required = true
+    ) {
         $this->name = $name;
+        $this->required = $required;
     }
 
     protected function getType(): string
@@ -29,6 +34,7 @@ final class BoolElement extends AbstractElement
         }
 
         return [
+            'required' => $this->required,
             'value' => $value,
         ];
     }

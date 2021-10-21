@@ -20,13 +20,13 @@ use Symfony\Component\Serializer\SerializerInterface;
 
 abstract class AbstractFormService
 {
-    protected SerializerInterface $serializer;
+    private SerializerInterface $serializer;
 
     abstract protected function getDtoClass(): string;
 
-    abstract protected function getAction(): Action;
+    abstract protected function getAction(DtoInterface $dto): Action;
 
-    abstract protected function build(Form $form): void;
+    abstract protected function build(Form $form, DtoInterface $dto): void;
 
     final public function setSerializer(SerializerInterface $serializer): self
     {
@@ -35,7 +35,7 @@ abstract class AbstractFormService
         return $this;
     }
 
-    final public function render(DtoInterface $dto = null, Action $action = null): array
+    final public function render(DtoInterface $dto = null): array
     {
         if (null === $dto) {
             $dtoClass = $this->getDtoClass();
@@ -49,9 +49,11 @@ abstract class AbstractFormService
             throw new Exception(\sprintf('invalid dto class for form `%s`', $formName));
         }
 
-        $form = new Form($formName, $action ?? $this->getAction());
+        $action = $this->getAction($dto);
 
-        $this->build($form);
+        $form = new Form($formName, $action);
+
+        $this->build($form, $dto);
 
         $data = $this->serializer->normalize($dto);
 

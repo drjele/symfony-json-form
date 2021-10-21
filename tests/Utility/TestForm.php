@@ -8,6 +8,7 @@ declare(strict_types=1);
 
 namespace Drjele\Symfony\JsonForm\Test\Utility;
 
+use Drjele\Symfony\JsonForm\Contract\DtoInterface;
 use Drjele\Symfony\JsonForm\Element\ArrayElement;
 use Drjele\Symfony\JsonForm\Element\AutocompleteElement;
 use Drjele\Symfony\JsonForm\Element\BoolElement;
@@ -25,12 +26,12 @@ class TestForm extends AbstractFormService
         return TestDto::class;
     }
 
-    protected function getAction(): Action
+    protected function getAction(DtoInterface $dto): Action
     {
         return new Action('test');
     }
 
-    protected function build(Form $form): void
+    protected function build(Form $form, DtoInterface $dto): void
     {
         $form->addElement(
             new ArrayElement(

@@ -11,7 +11,7 @@ namespace Drjele\Symfony\JsonForm\Element;
 use Drjele\Symfony\JsonForm\Exception\InvalidModeException;
 use Drjele\Symfony\JsonForm\Exception\InvalidValueException;
 
-final class ArrayElement extends AbstractElement
+class ArrayElement extends AbstractElement
 {
     public const MODE_SINGLE = 'single';
     public const MODE_MULTIPLE = 'multiple';
@@ -23,9 +23,14 @@ final class ArrayElement extends AbstractElement
 
     private array $options;
     private string $mode;
+    private bool $required;
 
-    public function __construct(string $name, array $options, string $mode = self::MODE_SINGLE)
-    {
+    public function __construct(
+        string $name,
+        array $options,
+        string $mode = self::MODE_SINGLE,
+        bool $required = true
+    ) {
         if (!\in_array($mode, static::MODES, true)) {
             throw new InvalidModeException($name, $mode, static::MODES);
         }
@@ -33,6 +38,7 @@ final class ArrayElement extends AbstractElement
         $this->name = $name;
         $this->options = $options;
         $this->mode = $mode;
+        $this->required = $required;
     }
 
     protected function getType(): string
@@ -55,6 +61,7 @@ final class ArrayElement extends AbstractElement
         return [
             'options' => $this->options,
             'mode' => $this->mode,
+            'required' => $this->required,
             'value' => $value,
         ];
     }

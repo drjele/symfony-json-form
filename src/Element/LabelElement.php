@@ -10,7 +10,7 @@ namespace Drjele\Symfony\JsonForm\Element;
 
 use Drjele\Symfony\JsonForm\Exception\InvalidValueException;
 
-final class LabelElement extends AbstractElement
+class LabelElement extends AbstractElement
 {
     public function __construct(string $name)
     {

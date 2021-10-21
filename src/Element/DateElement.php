@@ -11,7 +11,7 @@ namespace Drjele\Symfony\JsonForm\Element;
 use DateTime;
 use Drjele\Symfony\JsonForm\Exception\InvalidValueException;
 
-final class DateElement extends AbstractElement
+class DateElement extends AbstractElement
 {
     public const FORMAT_Y_M_D = 'Y-m-d';
     public const FORMAT_M_D_Y = 'm-d-Y';
@@ -20,11 +20,22 @@ final class DateElement extends AbstractElement
     public const FORMAT_Y_M_D_H_I = 'Y-m-d H:i';
 
     private string $format;
+    private ?string $min;
+    private ?string $max;
+    private bool $required;
 
-    public function __construct(string $name, string $format = self::FORMAT_Y_M_D)
-    {
+    public function __construct(
+        string $name,
+        string $format = self::FORMAT_Y_M_D,
+        string $min = null,
+        int $max = null,
+        bool $required = true
+    ) {
         $this->name = $name;
         $this->format = $format;
+        $this->min = $min;
+        $this->max = $max;
+        $this->required = $required;
     }
 
     protected function getType(): string
@@ -40,6 +51,9 @@ final class DateElement extends AbstractElement
 
         return [
             'format' => $this->format,
+            'min' => $this->min,
+            'max' => $this->max,
+            'required' => $this->required,
             'value' => $value,
         ];
     }
