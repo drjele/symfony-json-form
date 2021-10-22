@@ -28,7 +28,7 @@ class DateElement extends AbstractElement
         string $name,
         string $format = self::FORMAT_Y_M_D,
         string $min = null,
-        int $max = null,
+        string $max = null,
         bool $required = true
     ) {
         $this->name = $name;
