@@ -24,6 +24,8 @@ abstract class AbstractFormService
 
     abstract protected function getDtoClass(): string;
 
+    abstract protected function getMethod(): string;
+
     abstract protected function getAction(DtoInterface $dto): Action;
 
     abstract protected function build(Form $form, DtoInterface $dto): void;
@@ -51,7 +53,7 @@ abstract class AbstractFormService
 
         $action = $this->getAction($dto);
 
-        $form = new Form($formName, $action);
+        $form = new Form($formName, $this->getMethod(), $action);
 
         $this->build($form, $dto);
 

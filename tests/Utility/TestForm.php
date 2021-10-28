@@ -18,12 +18,18 @@ use Drjele\Symfony\JsonForm\Element\StringElement;
 use Drjele\Symfony\JsonForm\Form\Action;
 use Drjele\Symfony\JsonForm\Form\Form;
 use Drjele\Symfony\JsonForm\Service\AbstractFormService;
+use Symfony\Component\HttpFoundation\Request;
 
 class TestForm extends AbstractFormService
 {
     protected function getDtoClass(): string
     {
         return TestDto::class;
+    }
+
+    protected function getMethod(): string
+    {
+        return Request::METHOD_GET;
     }
 
     protected function getAction(DtoInterface $dto): Action

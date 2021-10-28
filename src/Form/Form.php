@@ -15,11 +15,13 @@ final class Form
     use ElementCollectionTrait;
 
     private string $name;
+    private string $method;
     private Action $action;
 
-    public function __construct(string $name, Action $action)
+    public function __construct(string $name, string $method, Action $action)
     {
         $this->name = $name;
+        $this->method = $method;
         $this->action = $action;
     }
 
@@ -27,6 +29,7 @@ final class Form
     {
         return [
             'name' => $this->name,
+            'method' => $this->method,
             'action' => $this->action->render(),
             'elements' => $this->renderElements($data),
         ];
