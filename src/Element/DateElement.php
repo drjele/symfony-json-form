@@ -43,7 +43,7 @@ class DateElement extends AbstractElement
         return 'date';
     }
 
-    protected function renderValue($value): array
+    protected function renderElement($value): array
     {
         if (null !== $value && !\is_string($value) && false === DateTime::createFromFormat($this->format, $value)) {
             throw new InvalidValueException($this->name, $value);

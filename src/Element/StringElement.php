@@ -27,7 +27,7 @@ class StringElement extends AbstractElement
         return 'string';
     }
 
-    protected function renderValue($value): array
+    protected function renderElement($value): array
     {
         if (null !== $value && !\is_string($value)) {
             throw new InvalidValueException($this->name, $value);

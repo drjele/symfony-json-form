@@ -14,7 +14,7 @@ abstract class AbstractElement
 
     abstract protected function getType(): string;
 
-    abstract protected function renderValue($value): array;
+    abstract protected function renderElement($value): array;
 
     final public function getName(): string
     {
@@ -26,6 +26,6 @@ abstract class AbstractElement
         return [
             'type' => $this->getType(),
             'name' => $this->name,
-        ] + $this->renderValue($value);
+        ] + $this->renderElement($value);
     }
 }

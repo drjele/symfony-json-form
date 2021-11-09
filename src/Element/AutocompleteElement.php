@@ -54,7 +54,7 @@ class AutocompleteElement extends AbstractElement
         return 'autocomplete';
     }
 
-    protected function renderValue($value): array
+    protected function renderElement($value): array
     {
         if (null !== $value) {
             $value = (array)$value;

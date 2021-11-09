@@ -36,7 +36,7 @@ class NumberElement extends AbstractElement
         return 'number';
     }
 
-    protected function renderValue($value): array
+    protected function renderElement($value): array
     {
         if (null !== $value && !\is_numeric($value)) {
             throw new InvalidValueException($this->name, $value);

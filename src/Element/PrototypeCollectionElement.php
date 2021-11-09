@@ -28,7 +28,7 @@ class PrototypeCollectionElement extends AbstractElement
         return 'prototypeCollection';
     }
 
-    public function renderValue($value): array
+    public function renderElement($value): array
     {
         if (null !== $value && !\is_array($value)) {
             throw new InvalidValueException($this->name, $value);

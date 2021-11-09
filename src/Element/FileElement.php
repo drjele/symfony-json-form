@@ -10,26 +10,31 @@ namespace Drjele\Symfony\JsonForm\Element;
 
 use Drjele\Symfony\JsonForm\Exception\InvalidValueException;
 
-class HiddenElement extends AbstractElement
+class FileElement extends AbstractElement
 {
-    public function __construct(string $name)
-    {
+    private bool $required;
+
+    public function __construct(
+        string $name,
+        bool $required = true
+    ) {
         $this->name = $name;
+        $this->required = $required;
     }
 
     protected function getType(): string
     {
-        return 'hidden';
+        return 'file';
     }
 
     protected function renderElement($value): array
     {
-        if (null !== $value && (\is_scalar($value) && !\is_array($value)) === false) {
+        if (null !== $value) {
             throw new InvalidValueException($this->name, $value);
         }
 
         return [
-            'value' => $value,
+            'required' => $this->required,
         ];
     }
 }

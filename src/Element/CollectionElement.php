@@ -25,7 +25,7 @@ class CollectionElement extends AbstractElement
         return 'collection';
     }
 
-    public function renderValue($value): array
+    public function renderElement($value): array
     {
         if (null !== $value && !\is_array($value)) {
             throw new InvalidValueException($this->name, $value);

@@ -22,7 +22,7 @@ class LabelElement extends AbstractElement
         return 'label';
     }
 
-    protected function renderValue($value): array
+    protected function renderElement($value): array
     {
         if (null !== $value && (\is_scalar($value) && !\is_array($value)) === false) {
             throw new InvalidValueException($this->name, $value);
