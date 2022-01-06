@@ -13,8 +13,10 @@ final class Action
     private string $route;
     private ?array $parameters;
 
-    public function __construct(string $route, array $parameters = null)
-    {
+    public function __construct(
+        string $route,
+        array $parameters = null
+    ) {
         $this->route = $route;
         $this->parameters = $parameters;
     }

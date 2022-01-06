@@ -18,8 +18,11 @@ final class Form
     private string $method;
     private Action $action;
 
-    public function __construct(string $name, string $method, Action $action)
-    {
+    public function __construct(
+        string $name,
+        string $method,
+        Action $action
+    ) {
         $this->name = $name;
         $this->method = $method;
         $this->action = $action;
