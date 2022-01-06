@@ -13,7 +13,7 @@ services:
     _instanceof:
         Drjele\Symfony\JsonForm\Service\AbstractFormService:
             calls:
-                - [ setSerializer, [ '@serializer' ] ]
+                - [setSerializer, ['@serializer']]
 ```
 
 ```php
