@@ -71,10 +71,9 @@ abstract class AbstractFormService
 
     protected function getDataAndContext(Request $request): array
     {
-        $data = [];
         $context = [];
 
-        switch ($request->getMethod()) {
+        switch ($this->getMethod()) {
             case Request::METHOD_GET:
                 $data = $request->query->all();
                 $context = [AbstractObjectNormalizer::DISABLE_TYPE_ENFORCEMENT => true];
@@ -82,10 +81,13 @@ abstract class AbstractFormService
             case Request::METHOD_POST:
             case Request::METHOD_PUT:
             case Request::METHOD_PATCH:
-                $content = $request->getContent();
-
-                if ($content) {
-                    $data = (new JsonEncoder())->decode($content, JsonEncoder::FORMAT)[$this->getName()] ?? [];
+                /** @todo handle based on request type */
+                $requestContent = $request->getContent();
+                if ($requestContent) {
+                    $data = (new JsonEncoder())->decode($requestContent, JsonEncoder::FORMAT)[$this->getName()] ?? [];
+                } else {
+                    $data = $request->request->all();
+                    $context = [AbstractObjectNormalizer::DISABLE_TYPE_ENFORCEMENT => true];
                 }
                 break;
             default:

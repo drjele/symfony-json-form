@@ -17,8 +17,10 @@ class PrototypeCollectionElement extends AbstractElement
 
     private bool $renderDefault;
 
-    public function __construct(string $name, bool $renderDefault = true)
-    {
+    public function __construct(
+        string $name,
+        bool $renderDefault = true
+    ) {
         $this->name = $name;
         $this->renderDefault = $renderDefault;
     }

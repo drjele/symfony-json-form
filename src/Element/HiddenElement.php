@@ -12,8 +12,9 @@ use Drjele\Symfony\JsonForm\Exception\InvalidValueException;
 
 class HiddenElement extends AbstractElement
 {
-    public function __construct(string $name)
-    {
+    public function __construct(
+        string $name
+    ) {
         $this->name = $name;
     }
 
