@@ -9,13 +9,14 @@ declare(strict_types=1);
 namespace Drjele\Symfony\JsonForm\Element;
 
 use Drjele\Symfony\JsonForm\Exception\InvalidValueException;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 class LabelElement extends AbstractElement
 {
     public function __construct(
-        string $name
+        protected readonly string $name,
+        protected readonly string $label
     ) {
-        $this->name = $name;
     }
 
     protected function getType(): string
@@ -23,14 +24,14 @@ class LabelElement extends AbstractElement
         return 'label';
     }
 
-    protected function renderElement($value): array
+    protected function renderElement(mixed $value, ?TranslatorInterface $translator): array
     {
-        if (null !== $value && (\is_scalar($value) && !\is_array($value)) === false) {
+        if (null !== $value && false === \is_scalar($value)) {
             throw new InvalidValueException($this->name, $value);
         }
 
         return [
-            'label' => $value,
+            'value' => $value,
         ];
     }
 }

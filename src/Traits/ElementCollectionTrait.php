@@ -10,11 +10,12 @@ namespace Drjele\Symfony\JsonForm\Traits;
 
 use Drjele\Symfony\JsonForm\Element\AbstractElement;
 use Drjele\Symfony\JsonForm\Exception\Exception;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 trait ElementCollectionTrait
 {
     /** @var AbstractElement[] */
-    private array $elements;
+    private array $elements = [];
 
     public function addElement(AbstractElement $element): self
     {
@@ -27,12 +28,12 @@ trait ElementCollectionTrait
         return $this;
     }
 
-    private function renderElements(array $value): array
+    private function renderElements(array $value, ?TranslatorInterface $translator): array
     {
         $elements = [];
 
         foreach ($this->elements as $element) {
-            $elements[] = $element->render($value[$element->getName()] ?? null);
+            $elements[] = $element->render($value[$element->getName()] ?? null, $translator);
         }
 
         return $elements;

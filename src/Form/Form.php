@@ -9,32 +9,26 @@ declare(strict_types=1);
 namespace Drjele\Symfony\JsonForm\Form;
 
 use Drjele\Symfony\JsonForm\Traits\ElementCollectionTrait;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 final class Form
 {
     use ElementCollectionTrait;
 
-    private string $name;
-    private string $method;
-    private Action $action;
-
     public function __construct(
-        string $name,
-        string $method,
-        Action $action
+        private readonly string $name,
+        private readonly string $method,
+        private readonly Action $action
     ) {
-        $this->name = $name;
-        $this->method = $method;
-        $this->action = $action;
     }
 
-    public function render($data): array
+    public function render($data, ?TranslatorInterface $translator): array
     {
         return [
             'name' => $this->name,
             'method' => $this->method,
             'action' => $this->action->render(),
-            'elements' => $this->renderElements($data),
+            'elements' => $this->renderElements($data, $translator),
         ];
     }
 }

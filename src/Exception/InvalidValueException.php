@@ -23,11 +23,9 @@ class InvalidValueException extends Exception
 
         switch (true) {
             case \is_scalar($value):
-                if (\is_array($value)) {
-                    return \implode(', ', $value);
-                }
-
                 return $value;
+            case \is_array($value):
+                return \implode(', ', $value);
             case \is_object($value):
                 return \get_class($value);
         }

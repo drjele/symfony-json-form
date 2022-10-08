@@ -9,17 +9,16 @@ declare(strict_types=1);
 namespace Drjele\Symfony\JsonForm\Element;
 
 use Drjele\Symfony\JsonForm\Exception\InvalidValueException;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
+/** base text input html element */
 class StringElement extends AbstractElement
 {
-    private bool $required;
-
     public function __construct(
-        string $name,
-        bool $required = true
+        protected readonly string $name,
+        protected readonly string $label,
+        protected readonly bool $required = true
     ) {
-        $this->name = $name;
-        $this->required = $required;
     }
 
     protected function getType(): string
@@ -27,9 +26,9 @@ class StringElement extends AbstractElement
         return 'string';
     }
 
-    protected function renderElement($value): array
+    protected function renderElement(mixed $value, ?TranslatorInterface $translator): array
     {
-        if (null !== $value && !\is_string($value)) {
+        if (null !== $value && false === \is_string($value)) {
             throw new InvalidValueException($this->name, $value);
         }
 

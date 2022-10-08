@@ -10,6 +10,7 @@ namespace Drjele\Symfony\JsonForm\Element;
 
 use DateTime;
 use Drjele\Symfony\JsonForm\Exception\InvalidValueException;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 class DateElement extends AbstractElement
 {
@@ -19,23 +20,14 @@ class DateElement extends AbstractElement
     public const FORMAT_Y_M_D_H_I_S = 'Y-m-d H:i:s';
     public const FORMAT_Y_M_D_H_I = 'Y-m-d H:i';
 
-    private string $format;
-    private ?string $min;
-    private ?string $max;
-    private bool $required;
-
     public function __construct(
-        string $name,
-        string $format = self::FORMAT_Y_M_D,
-        string $min = null,
-        string $max = null,
-        bool $required = true
+        protected readonly string $name,
+        protected readonly string $label,
+        protected readonly string $format = self::FORMAT_Y_M_D,
+        protected readonly ?string $min = null,
+        protected readonly ?string $max = null,
+        protected readonly bool $required = true
     ) {
-        $this->name = $name;
-        $this->format = $format;
-        $this->min = $min;
-        $this->max = $max;
-        $this->required = $required;
     }
 
     protected function getType(): string
@@ -43,9 +35,9 @@ class DateElement extends AbstractElement
         return 'date';
     }
 
-    protected function renderElement($value): array
+    protected function renderElement(mixed $value, ?TranslatorInterface $translator): array
     {
-        if (null !== $value && !\is_string($value) && false === DateTime::createFromFormat($this->format, $value)) {
+        if (null !== $value && false === \is_string($value) && false === DateTime::createFromFormat($this->format, $value)) {
             throw new InvalidValueException($this->name, $value);
         }
 

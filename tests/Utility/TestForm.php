@@ -12,8 +12,14 @@ use Drjele\Symfony\JsonForm\Contract\DtoInterface;
 use Drjele\Symfony\JsonForm\Element\ArrayElement;
 use Drjele\Symfony\JsonForm\Element\AutocompleteElement;
 use Drjele\Symfony\JsonForm\Element\BoolElement;
+use Drjele\Symfony\JsonForm\Element\CollectionElement;
 use Drjele\Symfony\JsonForm\Element\DateElement;
+use Drjele\Symfony\JsonForm\Element\FileElement;
+use Drjele\Symfony\JsonForm\Element\HiddenElement;
+use Drjele\Symfony\JsonForm\Element\LabelElement;
 use Drjele\Symfony\JsonForm\Element\NumberElement;
+use Drjele\Symfony\JsonForm\Element\PasswordElement;
+use Drjele\Symfony\JsonForm\Element\PrototypeCollectionElement;
 use Drjele\Symfony\JsonForm\Element\StringElement;
 use Drjele\Symfony\JsonForm\Form\Action;
 use Drjele\Symfony\JsonForm\Form\Form;
@@ -42,6 +48,7 @@ class TestForm extends AbstractFormService
         $form->addElement(
             new ArrayElement(
                 'array',
+                'array label',
                 ['test' => 'test'],
                 ArrayElement::MODE_SINGLE,
             )
@@ -49,13 +56,26 @@ class TestForm extends AbstractFormService
             ->addElement(
                 new AutocompleteElement(
                     'autocomplete',
+                    'autocomplete label',
                     'autocomplete-route',
                     ArrayElement::MODE_SINGLE
                 )
             )
-            ->addElement(new BoolElement('bool'))
-            ->addElement(new DateElement('date'))
-            ->addElement(new NumberElement('number', 1, 10, 1))
-            ->addElement(new StringElement('string'));
+            ->addElement(new BoolElement('bool', 'bool label'))
+            ->addElement(
+                (new CollectionElement('collection', 'collection label'))
+                    ->addElement(new StringElement('string', 'string label'))
+            )
+            ->addElement(new DateElement('date', 'date label'))
+            ->addElement(new FileElement('file', 'file label'))
+            ->addElement(new HiddenElement('hidden', 'hidden label'))
+            ->addElement(new LabelElement('label', 'label label'))
+            ->addElement(new NumberElement('number', 'number label', 1, 10, 1))
+            ->addElement(new PasswordElement('password', 'password label'))
+            ->addElement(
+                (new PrototypeCollectionElement('prototypeCollection', 'prototypeCollection label'))
+                    ->addElement(new StringElement('string', 'string label'))
+            )
+            ->addElement(new StringElement('string', 'string label'));
     }
 }

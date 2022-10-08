@@ -15,7 +15,7 @@ git config --global --add safe.directory /var/www/app
 
 alias own="chown -R www-data $@"
 alias ll="ls -al"
-alias pfull="gpc && fix && punit && own . && git st"
+alias pfull="gpc && fix && punit && git st"
 alias gap="gpcu && git add . && pfull"
 alias gitnb=git_branch_new
 alias gitmb=git_branch_merge

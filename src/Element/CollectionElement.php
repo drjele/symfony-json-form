@@ -10,15 +10,17 @@ namespace Drjele\Symfony\JsonForm\Element;
 
 use Drjele\Symfony\JsonForm\Exception\InvalidValueException;
 use Drjele\Symfony\JsonForm\Traits\ElementCollectionTrait;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
+/** used for nested elements */
 class CollectionElement extends AbstractElement
 {
     use ElementCollectionTrait;
 
     public function __construct(
-        string $name
+        protected readonly string $name,
+        protected readonly string $label
     ) {
-        $this->name = $name;
     }
 
     public function getType(): string
@@ -26,14 +28,14 @@ class CollectionElement extends AbstractElement
         return 'collection';
     }
 
-    public function renderElement($value): array
+    public function renderElement(mixed $value, ?TranslatorInterface $translator): array
     {
-        if (null !== $value && !\is_array($value)) {
+        if (null !== $value && false === \is_array($value)) {
             throw new InvalidValueException($this->name, $value);
         }
 
         return [
-            'elements' => $this->renderElements($value ?? []),
+            'elements' => $this->renderElements($value ?? [], $translator),
         ];
     }
 }

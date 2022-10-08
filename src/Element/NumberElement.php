@@ -9,26 +9,18 @@ declare(strict_types=1);
 namespace Drjele\Symfony\JsonForm\Element;
 
 use Drjele\Symfony\JsonForm\Exception\InvalidValueException;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 class NumberElement extends AbstractElement
 {
-    private ?float $min;
-    private ?float $max;
-    private ?float $step;
-    private bool $required;
-
     public function __construct(
-        string $name,
-        float $min = null,
-        float $max = null,
-        float $step = null,
-        bool $required = true
+        protected readonly string $name,
+        protected readonly string $label,
+        protected readonly ?float $min = null,
+        protected readonly ?float $max = null,
+        protected readonly ?float $step = null,
+        protected readonly bool $required = true
     ) {
-        $this->name = $name;
-        $this->min = $min;
-        $this->max = $max;
-        $this->step = $step;
-        $this->required = $required;
     }
 
     protected function getType(): string
@@ -36,7 +28,7 @@ class NumberElement extends AbstractElement
         return 'number';
     }
 
-    protected function renderElement($value): array
+    protected function renderElement(mixed $value, ?TranslatorInterface $translator): array
     {
         if (null !== $value && !\is_numeric($value)) {
             throw new InvalidValueException($this->name, $value);

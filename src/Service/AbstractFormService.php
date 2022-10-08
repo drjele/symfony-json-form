@@ -17,10 +17,12 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\Serializer\Normalizer\AbstractObjectNormalizer;
 use Symfony\Component\Serializer\SerializerInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 abstract class AbstractFormService
 {
     private SerializerInterface $serializer;
+    private ?TranslatorInterface $translator = null;
 
     abstract protected function getDtoClass(): string;
 
@@ -33,6 +35,13 @@ abstract class AbstractFormService
     final public function setSerializer(SerializerInterface $serializer): self
     {
         $this->serializer = $serializer;
+
+        return $this;
+    }
+
+    final public function setTranslator(TranslatorInterface $translator): self
+    {
+        $this->translator = $translator;
 
         return $this;
     }
@@ -59,7 +68,7 @@ abstract class AbstractFormService
 
         $data = $this->serializer->normalize($dto);
 
-        return $form->render($data);
+        return $form->render($data, $this->translator);
     }
 
     final public function handle(Request $request): DtoInterface
@@ -91,7 +100,9 @@ abstract class AbstractFormService
                 }
                 break;
             default:
-                throw new Exception('can not handle `%s` request method', $request->getMethod());
+                throw new Exception(
+                    \sprintf('can not handle `%s` request method', $request->getMethod())
+                );
         }
 
         return [$data, $context];

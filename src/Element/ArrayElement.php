@@ -10,7 +10,9 @@ namespace Drjele\Symfony\JsonForm\Element;
 
 use Drjele\Symfony\JsonForm\Exception\InvalidModeException;
 use Drjele\Symfony\JsonForm\Exception\InvalidValueException;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
+/** select html element */
 class ArrayElement extends AbstractElement
 {
     public const MODE_SINGLE = 'single';
@@ -21,24 +23,16 @@ class ArrayElement extends AbstractElement
         self::MODE_MULTIPLE,
     ];
 
-    private array $options;
-    private string $mode;
-    private bool $required;
-
     public function __construct(
-        string $name,
-        array $options,
-        string $mode = self::MODE_SINGLE,
-        bool $required = true
+        protected readonly string $name,
+        protected readonly string $label,
+        protected readonly array $options,
+        protected readonly string $mode = self::MODE_SINGLE,
+        protected readonly bool $required = true
     ) {
-        if (!\in_array($mode, static::MODES, true)) {
-            throw new InvalidModeException($name, $mode, static::MODES);
+        if (false === \in_array($this->mode, static::MODES, true)) {
+            throw new InvalidModeException($name, $this->mode, static::MODES);
         }
-
-        $this->name = $name;
-        $this->options = $options;
-        $this->mode = $mode;
-        $this->required = $required;
     }
 
     protected function getType(): string
@@ -46,13 +40,13 @@ class ArrayElement extends AbstractElement
         return 'array';
     }
 
-    protected function renderElement($value): array
+    protected function renderElement(mixed $value, ?TranslatorInterface $translator): array
     {
         if (null !== $value) {
             $value = (array)$value;
 
             /* @todo refactor for multi level array */
-            if ($diff = \array_diff($value, \array_keys($this->options))) {
+            if (false === empty($diff = \array_diff($value, \array_keys($this->options)))) {
                 throw new InvalidValueException($this->name, $diff);
             }
             /* @todo add more validations */
