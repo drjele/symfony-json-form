@@ -9,7 +9,6 @@ declare(strict_types=1);
 namespace Drjele\Symfony\JsonForm\Element;
 
 use Drjele\Symfony\JsonForm\Exception\InvalidValueException;
-use Symfony\Contracts\Translation\TranslatorInterface;
 
 class FileElement extends AbstractElement
 {
@@ -25,7 +24,7 @@ class FileElement extends AbstractElement
         return 'file';
     }
 
-    protected function renderElement(mixed $value, ?TranslatorInterface $translator): array
+    protected function renderElement(mixed $value): array
     {
         if (null !== $value) {
             throw new InvalidValueException($this->name, $value);

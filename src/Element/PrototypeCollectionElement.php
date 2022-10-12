@@ -10,7 +10,6 @@ namespace Drjele\Symfony\JsonForm\Element;
 
 use Drjele\Symfony\JsonForm\Exception\InvalidValueException;
 use Drjele\Symfony\JsonForm\Traits\ElementCollectionTrait;
-use Symfony\Contracts\Translation\TranslatorInterface;
 
 /** used for repeatable collections of elements */
 class PrototypeCollectionElement extends AbstractElement
@@ -29,7 +28,7 @@ class PrototypeCollectionElement extends AbstractElement
         return 'prototypeCollection';
     }
 
-    public function renderElement(mixed $value, ?TranslatorInterface $translator): array
+    public function renderElement(mixed $value): array
     {
         if (null !== $value && false === \is_array($value)) {
             throw new InvalidValueException($this->name, $value);
@@ -38,11 +37,11 @@ class PrototypeCollectionElement extends AbstractElement
         $elements = [];
 
         foreach (($value ?? []) as $v) {
-            $elements[] = $this->renderElements($v, $translator);
+            $elements[] = $this->renderElements($v);
         }
 
         if (true === $this->renderDefault && null === $value) {
-            $elements[] = $this->renderElements([], $translator);
+            $elements[] = $this->renderElements([]);
         }
 
         return [

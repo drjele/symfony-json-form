@@ -9,7 +9,6 @@ declare(strict_types=1);
 namespace Drjele\Symfony\JsonForm\Element;
 
 use Drjele\Symfony\JsonForm\Exception\Exception;
-use Symfony\Contracts\Translation\TranslatorInterface;
 
 abstract class AbstractElement
 {
@@ -18,14 +17,14 @@ abstract class AbstractElement
 
     abstract protected function getType(): string;
 
-    abstract protected function renderElement(mixed $value, ?TranslatorInterface $translator): array;
+    abstract protected function renderElement(mixed $value): array;
 
     final public function getName(): string
     {
         return $this->name;
     }
 
-    final public function render(mixed $value, ?TranslatorInterface $translator): array
+    final public function render(mixed $value): array
     {
         if (false === \ctype_alnum($this->name)) {
             throw new Exception(
@@ -36,7 +35,7 @@ abstract class AbstractElement
         return [
             'type' => $this->getType(),
             'name' => $this->name,
-            'label' => null !== $translator ? $translator->trans($this->label) : $this->label,
-        ] + $this->renderElement($value, $translator);
+            'label' => $this->label,
+        ] + $this->renderElement($value);
     }
 }

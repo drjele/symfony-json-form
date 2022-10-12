@@ -9,7 +9,6 @@ declare(strict_types=1);
 namespace Drjele\Symfony\JsonForm\Element;
 
 use Drjele\Symfony\JsonForm\Exception\InvalidValueException;
-use Symfony\Contracts\Translation\TranslatorInterface;
 
 class NumberElement extends AbstractElement
 {
@@ -28,7 +27,7 @@ class NumberElement extends AbstractElement
         return 'number';
     }
 
-    protected function renderElement(mixed $value, ?TranslatorInterface $translator): array
+    protected function renderElement(mixed $value): array
     {
         if (null !== $value && !\is_numeric($value)) {
             throw new InvalidValueException($this->name, $value);

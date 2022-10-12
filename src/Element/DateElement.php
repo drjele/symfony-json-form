@@ -10,7 +10,6 @@ namespace Drjele\Symfony\JsonForm\Element;
 
 use DateTime;
 use Drjele\Symfony\JsonForm\Exception\InvalidValueException;
-use Symfony\Contracts\Translation\TranslatorInterface;
 
 class DateElement extends AbstractElement
 {
@@ -35,7 +34,7 @@ class DateElement extends AbstractElement
         return 'date';
     }
 
-    protected function renderElement(mixed $value, ?TranslatorInterface $translator): array
+    protected function renderElement(mixed $value): array
     {
         if (null !== $value && false === \is_string($value) && false === DateTime::createFromFormat($this->format, $value)) {
             throw new InvalidValueException($this->name, $value);

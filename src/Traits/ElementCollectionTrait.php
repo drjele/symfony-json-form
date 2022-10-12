@@ -10,7 +10,6 @@ namespace Drjele\Symfony\JsonForm\Traits;
 
 use Drjele\Symfony\JsonForm\Element\AbstractElement;
 use Drjele\Symfony\JsonForm\Exception\Exception;
-use Symfony\Contracts\Translation\TranslatorInterface;
 
 trait ElementCollectionTrait
 {
@@ -28,12 +27,12 @@ trait ElementCollectionTrait
         return $this;
     }
 
-    private function renderElements(array $value, ?TranslatorInterface $translator): array
+    private function renderElements(array $value): array
     {
         $elements = [];
 
         foreach ($this->elements as $element) {
-            $elements[] = $element->render($value[$element->getName()] ?? null, $translator);
+            $elements[] = $element->render($value[$element->getName()] ?? null);
         }
 
         return $elements;

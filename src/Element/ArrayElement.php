@@ -10,7 +10,6 @@ namespace Drjele\Symfony\JsonForm\Element;
 
 use Drjele\Symfony\JsonForm\Exception\InvalidModeException;
 use Drjele\Symfony\JsonForm\Exception\InvalidValueException;
-use Symfony\Contracts\Translation\TranslatorInterface;
 
 /** select html element */
 class ArrayElement extends AbstractElement
@@ -40,7 +39,7 @@ class ArrayElement extends AbstractElement
         return 'array';
     }
 
-    protected function renderElement(mixed $value, ?TranslatorInterface $translator): array
+    protected function renderElement(mixed $value): array
     {
         if (null !== $value) {
             $value = (array)$value;

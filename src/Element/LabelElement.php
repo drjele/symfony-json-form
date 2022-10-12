@@ -9,7 +9,6 @@ declare(strict_types=1);
 namespace Drjele\Symfony\JsonForm\Element;
 
 use Drjele\Symfony\JsonForm\Exception\InvalidValueException;
-use Symfony\Contracts\Translation\TranslatorInterface;
 
 class LabelElement extends AbstractElement
 {
@@ -24,7 +23,7 @@ class LabelElement extends AbstractElement
         return 'label';
     }
 
-    protected function renderElement(mixed $value, ?TranslatorInterface $translator): array
+    protected function renderElement(mixed $value): array
     {
         if (null !== $value && false === \is_scalar($value)) {
             throw new InvalidValueException($this->name, $value);

@@ -9,7 +9,6 @@ declare(strict_types=1);
 namespace Drjele\Symfony\JsonForm\Element;
 
 use Drjele\Symfony\JsonForm\Exception\InvalidModeException;
-use Symfony\Contracts\Translation\TranslatorInterface;
 
 class AutocompleteElement extends AbstractElement
 {
@@ -39,7 +38,7 @@ class AutocompleteElement extends AbstractElement
         return 'autocomplete';
     }
 
-    protected function renderElement(mixed $value, ?TranslatorInterface $translator): array
+    protected function renderElement(mixed $value): array
     {
         if (null !== $value) {
             $value = (array)$value;

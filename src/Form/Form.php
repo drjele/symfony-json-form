@@ -9,7 +9,6 @@ declare(strict_types=1);
 namespace Drjele\Symfony\JsonForm\Form;
 
 use Drjele\Symfony\JsonForm\Traits\ElementCollectionTrait;
-use Symfony\Contracts\Translation\TranslatorInterface;
 
 final class Form
 {
@@ -22,13 +21,13 @@ final class Form
     ) {
     }
 
-    public function render($data, ?TranslatorInterface $translator): array
+    public function render($data): array
     {
         return [
             'name' => $this->name,
             'method' => $this->method,
             'action' => $this->action->render(),
-            'elements' => $this->renderElements($data, $translator),
+            'elements' => $this->renderElements($data),
         ];
     }
 }
