@@ -172,6 +172,15 @@ class ProductEditService
 }
 ```
 
+### React
+
+Use the components from **./assets/react** folder to interpret the backend response.
+The **Config** component is project specific. For me, it holds the locale context of the application.
+It is integrated with:
+
+* `willdurand/js-translation-bundle` for the Translator.
+* `friendsofsymfony/jsrouting-bundle` for the UrlGenerator.
+
 ## Dev
 
 ```shell
