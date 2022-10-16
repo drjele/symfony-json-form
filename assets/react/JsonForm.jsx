@@ -4,14 +4,16 @@
 import React from "react";
 import {useFormik} from "formik";
 import {default as TextFieldBase} from "@material-ui/core/TextField";
-import {Autocomplete as AutocompleteBase, Box, Button as ButtonBase, Checkbox, Chip, FormControl, FormControlLabel, InputLabel, ListItemText, MenuItem, OutlinedInput, Select} from "@mui/material";
+import {Autocomplete as AutocompleteBase, Box, Button as ButtonBase, Checkbox, Chip, FormControl as FormControlBase, FormControlLabel, InputLabel, ListItemText, ListSubheader, MenuItem, OutlinedInput, Select} from "@mui/material";
+import SearchIcon from "@mui/icons-material/Search";
+import UndoIcon from "@mui/icons-material/Replay";
 
 /** internal components */
 import BlockUi from "./BlockUi";
 import Exception from "../exception/Exception";
 import Translator from "./Translator";
 import UrlGenerator from "./UrlGenerator";
-import HttpClient from "./HttpClient";
+import HttpClient, {HttpRequest} from "./HttpClient";
 
 export class Button {
     static get SUBMIT() {
@@ -23,20 +25,110 @@ export class Button {
     }
 }
 
+class Form {
+    static computeInitialValues = (elements) => {
+        const initialValues = {};
+
+        elements.map(element => {
+                const formFieldName = element.name;
+
+                switch (element.type) {
+                    case "array":
+                        switch (element.mode) {
+                            case "single":
+                                initialValues[formFieldName] = element.value && element.value.length > 0 ? element.value[0] : null;
+                                break;
+                            default:
+                                initialValues[formFieldName] = element.value ? element.value : [];
+                        }
+                        break;
+                    case "bool":
+                        initialValues[formFieldName] = element.value ? element.value : false;
+                        break;
+                    case "collection":
+                        initialValues[formFieldName] = Form.computeInitialValues(element.elements);
+                        break;
+                    case "prototypeCollection":
+                        initialValues[formFieldName] = {}
+
+                        element.elements.map((elementsCollection, index) =>
+                            initialValues[formFieldName][index] = Form.computeInitialValues(elementsCollection)
+                        )
+                        break;
+                    default:
+                        initialValues[formFieldName] = element.value ? element.value : "";
+                }
+            }
+        );
+
+        return initialValues;
+    }
+
+    static createForm = (formData, onSubmitSuccess, onSubmitFailure, setLoading) => {
+        const urlGenerator = new UrlGenerator();
+        const httpClient = new HttpClient();
+
+        return useFormik({
+            "initialValues": Form.computeInitialValues(formData.elements),
+            "onSubmit": (values) => {
+                const httpRequest = (new HttpRequest(
+                    urlGenerator.generate(formData.action.route, formData.action.parameters),
+                    (response) => {
+                        if (response.success === false) {
+                            onSubmitFailure !== undefined && onSubmitFailure(response.errors);
+
+                            return;
+                        }
+
+                        onSubmitSuccess !== undefined && onSubmitSuccess(values, response.data);
+                    },
+                    formData.method
+                ))
+                    .setData({[formData.name]: values})
+                    .setBeforeSend(() => setLoading !== undefined && setLoading(true))
+                    .setOnError(() => onSubmitFailure !== undefined && onSubmitFailure())
+                    .setOnComplete(() => setLoading !== undefined && setLoading(false));
+
+                httpClient.send(httpRequest);
+            }
+        });
+    }
+}
+
+export const FormControl = ({children, ...props}) => {
+    return (
+        <FormControlBase
+            fullWidth
+            {...props}
+        >
+            {children}
+        </FormControlBase>
+    );
+}
+
 const AutocompleteField = ({formFieldName, formFieldLabel, formFieldValue, route, routeParameter, mode, required, formik, ...props}) => {
-    const [options, setOptions] = React.useState([]);
+    const isMounted = React.useRef(false);
+    React.useEffect(() => {
+        isMounted.current = true;
+
+        return () => {
+            isMounted.current = false;
+        };
+    }, []);
+
+    const [options, setOptionsState] = React.useState([]);
+    const setOptions = (options) => isMounted.current === true && setOptionsState(options);
 
     const httpRequest = React.useRef();
 
     const urlGenerator = new UrlGenerator();
+    const httpClient = new HttpClient();
 
     const onInputChange = (event, value) => {
-        if (httpRequest.current) {
-            httpRequest.current.abort();
-        }
+        httpRequest.current?.abort();
 
         if (value && value.length > 2) {
-            httpRequest.current = HttpClient.new(
+            httpRequest.current = new HttpRequest(
                 urlGenerator.generate(route, {[routeParameter]: value}),
                 (response) => {
                     let responseData = HttpClient.getDataFromResponse(response);
@@ -45,10 +137,11 @@ const AutocompleteField = ({formFieldName, formFieldLabel, formFieldValue, route
                     }
 
                     setOptions(responseData);
-                }
-            )
-                .setType(HttpClient.TYPE_GET)
-                .send();
+                },
+                HttpRequest.TYPE_GET
+            );
+
+            httpClient.send(httpRequest.current);
 
             return;
         }
@@ -106,11 +199,29 @@ const TextField = ({type, formFieldName, formFieldLabel, formFieldValue, require
     );
 }
 
-const MultipleSelect = ({formFieldName, formFieldLabel, formFieldValue, options, required, formik, ...props}) => {
+const MultipleSelectField = ({formFieldName, formFieldLabel, formFieldValue, options, required, formik, ...props}) => {
     const labelId = formFieldName + "Label";
+    let lastRenderedGroup = null;
+    const optionsComponents = [];
+
+    options.grouped.map((option) => {
+            if (options.groupBy === true && option.key !== lastRenderedGroup) {
+                lastRenderedGroup = option.key;
+
+                optionsComponents.push((<ListSubheader key={option.key}>{option.key}</ListSubheader>));
+            }
+
+            optionsComponents.push((
+                <MenuItem key={option.id} value={option.id}>
+                    <Checkbox checked={formFieldValue.indexOf(option.id) > -1}/>
+                    <ListItemText primary={option.label}/>
+                </MenuItem>
+            ));
+        }
+    )
 
     return (
-        <FormControl fullWidth required={required}>
+        <FormControlBase fullWidth required={required}>
             <InputLabel id={labelId}>{formFieldLabel}</InputLabel>
             <Select
                 multiple
@@ -120,39 +231,58 @@ const MultipleSelect = ({formFieldName, formFieldLabel, formFieldValue, options,
                 value={formFieldValue}
                 onChange={formik.handleChange}
                 input={<OutlinedInput label={formFieldLabel}/>}
-                renderValue={(selected) => (
+                renderValue={selected => (
                     <Box sx={{"display": "flex", "flexWrap": "wrap", "gap": 0.5}}>
-                        {selected.map((value) => (
-                            <Chip key={value} label={options[value]}/>
+                        {selected.map(value => (
+                            <Chip key={value} label={options.indexed[value]}/>
                         ))}
                     </Box>
                 )}
                 MenuProps={{
                     "PaperProps": {
                         "style": {
-                            "maxHeight": 48 * 4.5 + 8
+                            "maxHeight": 225
                         },
                     },
                 }}
                 {...props}
             >
-                {Object.entries(options).map((option) => {
-                        const [id, label] = option;
-
-                        return (
-                            <MenuItem key={id} value={id}>
-                                <Checkbox checked={formFieldValue.indexOf(id) > -1}/>
-                                <ListItemText primary={label}/>
-                            </MenuItem>
-                        );
-                    }
-                )}
+                {optionsComponents}
             </Select>
-        </FormControl>
+        </FormControlBase>
     );
 }
 
 const SelectField = ({formFieldName, formFieldLabel, formFieldValue, options, mode, required, formik, ...props}) => {
+    const processOptions = (options) => {
+        let groupBy = false;
+        const groupedOptions = [];
+        const indexedOptions = {};
+        Object.entries(options).map(([id, optionData]) => {
+            if (typeof optionData === "string") {
+                groupedOptions.push({"id": id, "label": optionData, "key": null});
+
+                indexedOptions[id] = optionData;
+            } else {
+                groupBy = true;
+
+                Object.entries(optionData).map(([childId, label]) => {
+                    groupedOptions.push({"id": childId, "label": label, "key": id});
+
+                    indexedOptions[childId] = label;
+                })
+            }
+        });
+
+        return {
+            "groupBy": groupBy,
+            "grouped": groupedOptions,
+            "indexed": indexedOptions
+        };
+    };
+
+    const processedOptions = processOptions(options);
+
     switch (mode) {
         case "single":
             return (
@@ -160,13 +290,9 @@ const SelectField = ({formFieldName, formFieldLabel, formFieldValue, options, mo
                     id={formFieldName}
                     name={formFieldName}
                     value={formFieldValue}
-                    options={Object.entries(options).map((option) => {
-                            const [id, label] = option;
-
-                            return {"label": label, "id": id};
-                        }
-                    )}
-                    getOptionLabel={(option) => (option.label !== undefined ? option.label : (options[option] !== undefined ? options[option] : ""))}
+                    options={processedOptions.grouped}
+                    groupBy={option => processedOptions.groupBy === true ? option.key : null}
+                    getOptionLabel={option => (option.label !== undefined ? option.label : (processedOptions.indexed[option] !== undefined ? processedOptions.indexed[option] : ""))}
                     autoHighlight={true}
                     isOptionEqualToValue={(option, value) => option.id === value}
                     onChange={(e, value) => {
@@ -180,11 +306,11 @@ const SelectField = ({formFieldName, formFieldLabel, formFieldValue, options, mo
             );
         case "multiple":
             return (
-                <MultipleSelect
+                <MultipleSelectField
                     formFieldName={formFieldName}
                     formFieldLabel={formFieldLabel}
                     formFieldValue={formFieldValue}
-                    options={options}
+                    options={processedOptions}
                     required={required}
                     formik={formik}
                     {...props}
@@ -195,16 +321,10 @@ const SelectField = ({formFieldName, formFieldLabel, formFieldValue, options, mo
     }
 }
 
-const JsonForm = ({formData, buttons, onSubmitSuccess, onSubmitFailure}) => {
-    const [loading, setLoading] = React.useState(false);
+const FormFields = ({elements, formik, baseFormControlClassNames}) => {
+    baseFormControlClassNames = baseFormControlClassNames === undefined ? [] : baseFormControlClassNames;
 
     const translator = new Translator();
-
-    const buildFormFieldName = (element, parents) => {
-        const prefix = parents === undefined ? [] : parents;
-
-        return [...prefix, element.name].join(".");
-    }
 
     const getNestedValueByPath = (object, path) => {
         if (path === undefined || path.length === 0) {
@@ -224,12 +344,19 @@ const JsonForm = ({formData, buttons, onSubmitSuccess, onSubmitFailure}) => {
         return result;
     }
 
-    const createFormFields = (elements, formik, parents) => {
+    const buildFormFieldName = (element, parents) => {
+        const prefix = parents === undefined ? [] : parents;
+
+        return [...prefix, element.name].join(".");
+    }
+
+    const createFormFields = (elements, parents) => {
         parents = parents === undefined ? [] : parents;
         const initialValues = getNestedValueByPath(formik.values, parents);
 
         return elements.map(element => {
-                let formField, formControlClassName;
+                let formField;
+                const formControlClassNames = [...baseFormControlClassNames];
 
                 const formFieldName = buildFormFieldName(element, parents);
                 const formFieldLabel = translator.translate(element.label);
@@ -282,10 +409,10 @@ const JsonForm = ({formData, buttons, onSubmitSuccess, onSubmitFailure}) => {
                         break;
                     case "collection":
                         formField = (
-                            <div key={formFieldName + "Collection"}>{
+                            <Box key={formFieldName + "Collection"}>{
                                 createFormFields(element.elements, formik, [...parents, element.name])
                             }
-                            </div>
+                            </Box>
                         );
                         break;
                     case "date":
@@ -317,7 +444,7 @@ const JsonForm = ({formData, buttons, onSubmitSuccess, onSubmitFailure}) => {
                         );
                         break;
                     case "hidden":
-                        formControlClassName = "hidden";
+                        formControlClassNames.push("hidden");
 
                         formField = (
                             <TextField
@@ -360,12 +487,12 @@ const JsonForm = ({formData, buttons, onSubmitSuccess, onSubmitFailure}) => {
                         break;
                     case "prototypeCollection":
                         formField = (
-                            <div key={formFieldName + "PrototypeCollection"}>{
+                            <Box key={formFieldName + "PrototypeCollection"}>{
                                 element.elements.map((elementsCollection, index) =>
                                     createFormFields(elementsCollection, formik, [...parents, element.name, index])
                                 )
                             }
-                            </div>
+                            </Box>
                         );
                         break;
                     case "string":
@@ -386,11 +513,9 @@ const JsonForm = ({formData, buttons, onSubmitSuccess, onSubmitFailure}) => {
 
                 return (
                     <FormControl
-                        fullWidth
                         key={formFieldName}
                         required={required}
-                        className={formControlClassName}
-                        style={{"paddingBlock": "5px"}}
+                        className={formControlClassNames.join(" ")}
                     >
                         {formField}
                     </FormControl>
@@ -399,103 +524,163 @@ const JsonForm = ({formData, buttons, onSubmitSuccess, onSubmitFailure}) => {
         );
     }
 
-    const computeInitialValues = (elements) => {
-        const initialValues = {};
+    return createFormFields(elements);
+}
 
-        elements.map(element => {
-                const formFieldName = element.name;
+const FormButtons = ({buttons, formik}) => {
+    const translator = new Translator();
 
-                switch (element.type) {
-                    case "array":
-                        switch (element.mode) {
-                            case "single":
-                                initialValues[formFieldName] = element.value && element.value.length > 0 ? element.value[0] : null;
-                                break;
-                            default:
-                                initialValues[formFieldName] = element.value ? element.value : [];
-                        }
-                        break;
-                    case "bool":
-                        initialValues[formFieldName] = element.value ? element.value : false;
-                        break;
-                    case "collection":
-                        initialValues[formFieldName] = computeInitialValues(element.elements);
-                        break;
-                    case "prototypeCollection":
-                        initialValues[formFieldName] = {}
-
-                        element.elements.map((elementsCollection, index) =>
-                            initialValues[formFieldName][index] = computeInitialValues(elementsCollection)
-                        )
-                        break;
-                    default:
-                        initialValues[formFieldName] = element.value ? element.value : "";
-                }
-            }
-        );
-
-        return initialValues;
+    buttons = buttons === undefined ? {[Button.SUBMIT]: "wms.button.ok"} : buttons;
+    if (buttons[Button.SUBMIT] === undefined) {
+        buttons [Button.SUBMIT] = "wms.button.ok";
     }
 
-    const createButtons = (buttons, formik) => {
-        buttons = buttons === undefined ? {[Button.SUBMIT]: "wms.button.ok"} : buttons;
-        if (buttons[Button.SUBMIT] === undefined) {
-            buttons [Button.SUBMIT] = "wms.button.ok";
-        }
-
-        return (
+    return (
+        <FormControl>
             <Box textAlign="center">{
                 Object.entries(buttons).map(button => {
-                        const [type, label] = button;
+                        let [type, label] = button;
+                        let icon = null;
+                        let onClick = null;
+
+                        if (Array.isArray(label)) {
+                            [icon, label, onClick] = label;
+                        }
 
                         switch (type) {
                             case Button.SUBMIT:
-                                return (<ButtonBase key={type} type="submit" color="primary" variant="contained" fullWidth={buttons.length === 1}>{translator.translate(label)}</ButtonBase>);
+                                return (
+                                    <ButtonBase
+                                        key={type}
+                                        type="submit"
+                                        color="primary"
+                                        variant="contained"
+                                        fullWidth={buttons.length === 1}
+                                        onClick={() => onClick && onClick()}
+                                    >
+                                        {icon}{icon === null ? "" : " "}{translator.translate(label)}
+                                    </ButtonBase>
+                                );
                             case Button.RESET:
-                                return (<ButtonBase key={type} type="reset" color="secondary" onClick={formik.resetForm}>{translator.translate(label)}</ButtonBase>);
+                                return (
+                                    <ButtonBase
+                                        key={type}
+                                        type="reset"
+                                        color="secondary"
+                                        onClick={() => {
+                                            formik.resetForm();
+
+                                            onClick && onClick()
+                                        }}
+                                    >
+                                        {icon}{icon === null ? "" : " "}{translator.translate(label)}
+                                    </ButtonBase>
+                                );
                         }
                     }
                 )
             }
             </Box>
-        );
+        </FormControl>
+    );
+}
+
+const FormContainer = ({children, loading, name, onSubmit, className, ...props}) => {
+    const classNames = ["form-container"];
+    if (className !== undefined) {
+        classNames.push(className);
     }
 
-    const urlGenerator = new UrlGenerator();
+    return (
+        <Box className={classNames.join(" ")} {...props}>
+            <BlockUi open={loading}>
+                <form name={name} onSubmit={onSubmit} autoComplete="off">
+                    {children}
+                </form>
+            </BlockUi>
+        </Box>
+    );
+}
 
-    const formik = useFormik({
-        "initialValues": computeInitialValues(formData.elements),
-        "onSubmit": (values) => {
-            HttpClient.new(
-                urlGenerator.generate(formData.action.route, formData.action.parameters),
-                (response) => {
-                    if (response.success === false) {
-                        onSubmitFailure !== undefined && onSubmitFailure(response.errors);
-
-                        return;
-                    }
-
-                    onSubmitSuccess !== undefined && onSubmitSuccess(response.data);
-                }
-            )
-                .setData(JSON.stringify({[formData.name]: values}))
-                .setType(formData.method)
-                .setBeforeSend(() => setLoading(true))
-                .setOnError(() => onSubmitFailure !== undefined && onSubmitFailure())
-                .setOnComplete(() => setLoading(false))
-                .send();
-        }
-    });
+const FormFieldsContainer = ({children, className, ...props}) => {
+    const classNames = ["form-fields-container", "d-flex flex-wrap gap-1 align-items-center"];
+    if (className !== undefined) {
+        classNames.push(className);
+    }
 
     return (
-        <form name={formData.name} onSubmit={formik.handleSubmit} autoComplete="off">
-            <BlockUi open={loading}>
-                {createFormFields(formData.elements, formik)}
-                {createButtons(buttons, formik)}
-            </BlockUi>
-        </form>
+        <Box className={classNames.join(" ")} {...props}>
+            {children}
+        </Box>
+    );
+}
+
+const JsonForm = ({formData, fixedElements, buttons, onSubmitSuccess, onSubmitFailure}) => {
+    const isMounted = React.useRef(false);
+    React.useEffect(() => {
+        isMounted.current = true;
+
+        return () => {
+            isMounted.current = false;
+        };
+    }, []);
+
+    const [loading, setLoadingState] = React.useState(false);
+    const setLoading = (loading) => isMounted.current !== true && setLoadingState(loading);
+
+    const formik = Form.createForm(formData, onSubmitSuccess, onSubmitFailure, setLoading)
+
+    return (
+        <FormContainer loading={loading} name={formData.name} onSubmit={formik.handleSubmit}>
+            <FormFieldsContainer className="flex-column">
+                <FormFields elements={formData.elements} formik={formik}/>
+            </FormFieldsContainer>
+            {fixedElements && (<Box>{fixedElements}</Box>)}
+            <FormButtons buttons={buttons} formik={formik}/>
+        </FormContainer>
+    );
+}
+
+export const SearchForm = ({formData, onSubmitSuccess, onSubmitFailure, onReset}) => {
+    const isMounted = React.useRef(false);
+    React.useEffect(() => {
+        isMounted.current = true;
+
+        return () => {
+            isMounted.current = false;
+        };
+    }, []);
+
+    const [loading, setLoadingState] = React.useState(false);
+    const setLoading = (loading) => isMounted.current === true && setLoadingState(loading);
+
+    const formik = Form.createForm(formData, onSubmitSuccess, onSubmitFailure, setLoading)
+
+    return (
+        <FormContainer loading={loading} name={formData.name} onSubmit={formik.handleSubmit} className="search-form-container">
+            <Box className="card">
+                <FormFieldsContainer className="card-body pt-1 pb-1 flex-wrap">
+                    <FormFields
+                        elements={formData.elements}
+                        formik={formik}
+                        baseFormControlClassNames={["form-control"]}
+                    />
+                </FormFieldsContainer>
+
+                <Box className="card-footer pt-1 pb-1">
+                    <FormButtons
+                        buttons={
+                            {
+                                [Button.SUBMIT]: [<SearchIcon/>, "wms.button.search"],
+                                [Button.RESET]: [<UndoIcon/>, "wms.button.reset", onReset]
+                            }
+                        }
+                        formik={formik}
+                    />
+                </Box>
+            </Box>
+        </FormContainer>
     );
 }
 
 export default JsonForm;
-

@@ -83,8 +83,8 @@ abstract class AbstractFormService
             case Request::METHOD_PATCH:
                 /** @todo handle based on request type */
                 $requestContent = $request->getContent();
-                if ($requestContent) {
-                    $data = (new JsonEncoder())->decode($requestContent, JsonEncoder::FORMAT)[$this->getName()] ?? [];
+                if (false === empty($requestContent)) {
+                    $data = (new JsonEncoder())->decode($requestContent, JsonEncoder::FORMAT);
                 } else {
                     $data = $request->request->all();
                     $context = [AbstractObjectNormalizer::DISABLE_TYPE_ENFORCEMENT => true];
@@ -96,7 +96,7 @@ abstract class AbstractFormService
                 );
         }
 
-        return [$data, $context];
+        return [$data[$this->getName()] ?? [], $context];
     }
 
     protected function getName(): string
