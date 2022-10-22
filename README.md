@@ -51,7 +51,7 @@ class ProductController extends AbstractController
 
             $productEditService->save($dto);
         } else {
-            $productEditService->createDto($id);
+            $dto = $productEditService->createDto($id);
         }
 
         return $this->json(
@@ -139,8 +139,8 @@ class ProductEditForm extends AbstractFormService
 
     protected function build(Form $form): void
     {
-        $form->addElement(new NumberElement('id'))
-            ->addElement(new ArrayElement('status', ['active', 'inactive']));
+        $form->addElement(new NumberElement('id', 'Id'))
+            ->addElement(new ArrayElement('status', 'Status', ['active' => 'Active', 'inactive' => 'Inactive']));
     }
 }
 ```
