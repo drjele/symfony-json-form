@@ -45,7 +45,7 @@ final class FormTest extends TestCase
 
         $request = new Request();
 
-        $dto = $testForm->handle($request);
+        $dto = $testForm->handleRequest($request);
 
         static::assertInstanceOf(TestDto::class, $dto);
     }

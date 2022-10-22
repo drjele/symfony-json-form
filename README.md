@@ -47,7 +47,7 @@ class ProductController extends AbstractController
 
         if (Request::METHOD_POST === $request->getMethod()) {
             /** @var ProductEditDto $dto */
-            $dto = $productEditForm->handle($request);
+            $dto = $productEditForm->handleRequest($request);
 
             $productEditService->save($dto);
         } else {

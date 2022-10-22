@@ -63,7 +63,7 @@ abstract class AbstractFormService
         return $form->render($data);
     }
 
-    final public function handle(
+    final public function handleRequest(
         Request $request,
         DtoInterface $dto = null,
         bool $sanitizeData = true
