@@ -6,7 +6,7 @@ declare(strict_types=1);
  * Copyright (c) Adrian Jeledintan
  */
 
-namespace Drjele\Symfony\JsonForm\Service;
+namespace Drjele\Symfony\JsonForm\Service\Contract;
 
 use Drjele\Symfony\JsonForm\Contract\DtoInterface;
 use Drjele\Symfony\JsonForm\Exception\Exception;
@@ -15,6 +15,7 @@ use Drjele\Symfony\JsonForm\Form\Form;
 use ReflectionClass;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
+use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
 use Symfony\Component\Serializer\Normalizer\AbstractObjectNormalizer;
 use Symfony\Component\Serializer\SerializerInterface;
 
@@ -62,9 +63,20 @@ abstract class AbstractFormService
         return $form->render($data);
     }
 
-    final public function handle(Request $request): DtoInterface
-    {
+    final public function handle(
+        Request $request,
+        DtoInterface $dto = null,
+        bool $sanitizeData = true
+    ): DtoInterface {
         [$data, $context] = $this->getDataAndContext($request);
+
+        if (true === $sanitizeData) {
+            $data = $this->sanitizeData($data);
+        }
+
+        if (null !== $dto) {
+            $context[AbstractNormalizer::OBJECT_TO_POPULATE] = $dto;
+        }
 
         return $this->serializer->denormalize($data, $this->getDtoClass(), null, $context);
     }
@@ -76,7 +88,7 @@ abstract class AbstractFormService
         switch ($this->getMethod()) {
             case Request::METHOD_GET:
                 $data = $request->query->all();
-                $context = [AbstractObjectNormalizer::DISABLE_TYPE_ENFORCEMENT => true];
+                $context[AbstractObjectNormalizer::DISABLE_TYPE_ENFORCEMENT] = true;
                 break;
             case Request::METHOD_POST:
             case Request::METHOD_PUT:
@@ -87,7 +99,7 @@ abstract class AbstractFormService
                     $data = (new JsonEncoder())->decode($requestContent, JsonEncoder::FORMAT);
                 } else {
                     $data = $request->request->all();
-                    $context = [AbstractObjectNormalizer::DISABLE_TYPE_ENFORCEMENT => true];
+                    $context[AbstractObjectNormalizer::DISABLE_TYPE_ENFORCEMENT] = true;
                 }
                 break;
             default:
@@ -106,5 +118,31 @@ abstract class AbstractFormService
         $position = \strrpos($className, 'Service');
 
         return false === $position ? $className : \substr($className, 0, $position);
+    }
+
+    protected function sanitizeData(array $data): array
+    {
+        $sanitizedData = [];
+
+        foreach ($data as $key => $value) {
+            switch (true) {
+                case \is_array($value):
+                    $value = $this->sanitizeData($value);
+
+                    if (true === empty($value)) {
+                        continue 2;
+                    }
+                    break;
+                case \is_string($value):
+                    if ('' === $value) {
+                        continue 2;
+                    }
+                    break;
+            }
+
+            $sanitizedData[$key] = $value;
+        }
+
+        return $sanitizedData;
     }
 }

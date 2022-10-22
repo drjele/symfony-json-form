@@ -8,16 +8,18 @@ declare(strict_types=1);
 
 namespace Drjele\Symfony\JsonForm\Element;
 
+use Drjele\Symfony\JsonForm\Element\Contract\AbstractElement;
 use Drjele\Symfony\JsonForm\Exception\InvalidValueException;
 
 /** base text input html element */
 class StringElement extends AbstractElement
 {
     public function __construct(
-        protected readonly string $name,
-        protected readonly string $label,
+        string $name,
+        string $label,
         protected readonly bool $required = true
     ) {
+        parent::__construct($name, $label);
     }
 
     protected function getType(): string
@@ -28,7 +30,7 @@ class StringElement extends AbstractElement
     protected function renderElement(mixed $value): array
     {
         if (null !== $value && false === \is_string($value)) {
-            throw new InvalidValueException($this->name, $value);
+            throw new InvalidValueException($this->getName(), $value);
         }
 
         return [

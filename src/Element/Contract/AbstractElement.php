@@ -6,14 +6,17 @@ declare(strict_types=1);
  * Copyright (c) Adrian Jeledintan
  */
 
-namespace Drjele\Symfony\JsonForm\Element;
+namespace Drjele\Symfony\JsonForm\Element\Contract;
 
 use Drjele\Symfony\JsonForm\Exception\Exception;
 
 abstract class AbstractElement
 {
-    protected readonly string $name;
-    protected readonly string $label;
+    public function __construct(
+        private readonly string $name,
+        private readonly ?string $label
+    ) {
+    }
 
     abstract protected function getType(): string;
 

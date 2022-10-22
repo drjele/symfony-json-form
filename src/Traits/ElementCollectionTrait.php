@@ -8,7 +8,7 @@ declare(strict_types=1);
 
 namespace Drjele\Symfony\JsonForm\Traits;
 
-use Drjele\Symfony\JsonForm\Element\AbstractElement;
+use Drjele\Symfony\JsonForm\Element\Contract\AbstractElement;
 use Drjele\Symfony\JsonForm\Exception\Exception;
 
 trait ElementCollectionTrait

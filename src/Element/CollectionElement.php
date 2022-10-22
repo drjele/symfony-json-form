@@ -8,6 +8,7 @@ declare(strict_types=1);
 
 namespace Drjele\Symfony\JsonForm\Element;
 
+use Drjele\Symfony\JsonForm\Element\Contract\AbstractElement;
 use Drjele\Symfony\JsonForm\Exception\InvalidValueException;
 use Drjele\Symfony\JsonForm\Traits\ElementCollectionTrait;
 
@@ -17,9 +18,10 @@ class CollectionElement extends AbstractElement
     use ElementCollectionTrait;
 
     public function __construct(
-        protected readonly string $name,
-        protected readonly string $label
+        string $name,
+        string $label
     ) {
+        parent::__construct($name, $label);
     }
 
     public function getType(): string
@@ -30,7 +32,7 @@ class CollectionElement extends AbstractElement
     public function renderElement(mixed $value): array
     {
         if (null !== $value && false === \is_array($value)) {
-            throw new InvalidValueException($this->name, $value);
+            throw new InvalidValueException($this->getName(), $value);
         }
 
         return [

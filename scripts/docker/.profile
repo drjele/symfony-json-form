@@ -13,12 +13,14 @@ git config --global color.status auto
 git config --global push.default current
 git config --global --add safe.directory /var/www/app
 
-alias own="chown -R www-data $@"
 alias ll="ls -al"
-alias pfull="gpc && fix && punit && git st"
-alias gap="gpcu && git add . && pfull"
+alias pfull="rm -rf var/cache/ && gpc && fix && punit && git st"
+alias gap="rm -rf var/cache/ && gpcu && git add . && pfull"
 alias gitnb=git_branch_new
 alias gitmb=git_branch_merge
+alias gaf="clear && git add . && fix && fixjs && git st"
+alias ci="clear && composer install"
+alias gdiffc="gdiff --cached"
 
 git_branch_new() {
     if [[ -n "$1" && "$1" != ' ' && -n "$2" && "$2" != ' ' ]]; then
@@ -76,6 +78,8 @@ fix() {
 
     echo -e "\e[33m[\e[32m\e[1m ${PCFPATH} \e[21m\e[33m]\e[0m"
     php -d memory_limit=-1 "${PCFPATH}" fix "$@"
+
+    return 0
 }
 
 punit() {
@@ -88,4 +92,18 @@ punit() {
 
     echo -e "\e[33m[\e[32m\e[1m ${PCFPATH} \e[21m\e[33m]\e[0m"
     php -d memory_limit=-1 "${PCFPATH}" "$@"
+}
+
+fixjs() {
+    if [[ -e "${PWD}/node_modules/.bin/eslint" ]]; then
+        PCFPATH="${PWD}/node_modules/.bin/eslint"
+    else
+        echo -e '\e[31m\e[1m[ nu exista eslint ]\e[21m\e[0m'
+        return 0
+    fi
+
+    echo -e "\e[33m[\e[32m\e[1m ${PCFPATH} \e[21m\e[33m]\e[0m"
+    "${PCFPATH}" --fix assets
+
+    return 0
 }

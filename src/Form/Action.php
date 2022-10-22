@@ -10,15 +10,10 @@ namespace Drjele\Symfony\JsonForm\Form;
 
 final class Action
 {
-    private string $route;
-    private ?array $parameters;
-
     public function __construct(
-        string $route,
-        array $parameters = null
+        private readonly string $route,
+        private readonly ?array $parameters = null
     ) {
-        $this->route = $route;
-        $this->parameters = $parameters;
     }
 
     public function render(): array

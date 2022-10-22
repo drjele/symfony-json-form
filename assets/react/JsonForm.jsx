@@ -64,7 +64,7 @@ class Form {
         return initialValues;
     }
 
-    static createForm = (formData, onSubmitSuccess, onSubmitFailure, setLoading) => {
+    static createForm = (formData, onSubmitSuccess, onSubmitFailure, beforeSend, onComplete, setLoading, staticData) => {
         const urlGenerator = new UrlGenerator();
         const httpClient = new HttpClient();
 
@@ -84,10 +84,23 @@ class Form {
                     },
                     formData.method
                 ))
-                    .setData({[formData.name]: values})
-                    .setBeforeSend(() => setLoading !== undefined && setLoading(true))
+                    .setData(
+                        {
+                            [formData.name]: values,
+                            ...staticData
+                        }
+                    )
+                    .setBeforeSend(() => {
+                        setLoading !== undefined && setLoading(true);
+
+                        beforeSend !== undefined && beforeSend();
+                    })
                     .setOnError(() => onSubmitFailure !== undefined && onSubmitFailure())
-                    .setOnComplete(() => setLoading !== undefined && setLoading(false));
+                    .setOnComplete(() => {
+                        onComplete !== undefined && onComplete();
+
+                        setLoading !== undefined && setLoading(false);
+                    });
 
                 httpClient.send(httpRequest);
             }
@@ -177,6 +190,7 @@ const AutocompleteField = ({formFieldName, formFieldLabel, formFieldValue, route
             renderInput={params => (
                 <TextFieldBase label={formFieldLabel} required={required} {...params}/>
             )}
+            defaultValue={null}
             {...props}
         />
     );
@@ -245,6 +259,7 @@ const MultipleSelectField = ({formFieldName, formFieldLabel, formFieldValue, opt
                         },
                     },
                 }}
+                defaultValue={null}
                 {...props}
             >
                 {optionsComponents}
@@ -301,6 +316,7 @@ const SelectField = ({formFieldName, formFieldLabel, formFieldValue, options, mo
                     renderInput={params => (
                         <TextFieldBase label={formFieldLabel} required={required} {...params}/>
                     )}
+                    defaultValue={null}
                     {...props}
                 />
             );
@@ -594,7 +610,7 @@ const FormContainer = ({children, loading, name, onSubmit, className, ...props})
     return (
         <Box className={classNames.join(" ")} {...props}>
             <BlockUi open={loading}>
-                <form name={name} onSubmit={onSubmit} autoComplete="off">
+                <form name={name} onSubmit={onSubmit} autoComplete="off" className="d-flex flex-column gap-1 p-block-1">
                     {children}
                 </form>
             </BlockUi>
@@ -615,7 +631,7 @@ const FormFieldsContainer = ({children, className, ...props}) => {
     );
 }
 
-const JsonForm = ({formData, fixedElements, buttons, onSubmitSuccess, onSubmitFailure}) => {
+const JsonForm = ({formData, fixedElements, buttons, onSubmitSuccess, onSubmitFailure, beforeSend, onComplete}) => {
     const isMounted = React.useRef(false);
     React.useEffect(() => {
         isMounted.current = true;
@@ -628,7 +644,14 @@ const JsonForm = ({formData, fixedElements, buttons, onSubmitSuccess, onSubmitFa
     const [loading, setLoadingState] = React.useState(false);
     const setLoading = (loading) => isMounted.current !== true && setLoadingState(loading);
 
-    const formik = Form.createForm(formData, onSubmitSuccess, onSubmitFailure, setLoading)
+    const formik = Form.createForm(
+        formData,
+        onSubmitSuccess,
+        onSubmitFailure,
+        beforeSend,
+        onComplete,
+        setLoading
+    );
 
     return (
         <FormContainer loading={loading} name={formData.name} onSubmit={formik.handleSubmit}>
@@ -641,7 +664,7 @@ const JsonForm = ({formData, fixedElements, buttons, onSubmitSuccess, onSubmitFa
     );
 }
 
-export const SearchForm = ({formData, onSubmitSuccess, onSubmitFailure, onReset}) => {
+export const SearchForm = ({triggerSubmit, formData, onSubmitSuccess, onSubmitFailure, beforeSend, onComplete, onReset, staticData}) => {
     const isMounted = React.useRef(false);
     React.useEffect(() => {
         isMounted.current = true;
@@ -654,7 +677,23 @@ export const SearchForm = ({formData, onSubmitSuccess, onSubmitFailure, onReset}
     const [loading, setLoadingState] = React.useState(false);
     const setLoading = (loading) => isMounted.current === true && setLoadingState(loading);
 
-    const formik = Form.createForm(formData, onSubmitSuccess, onSubmitFailure, setLoading)
+    const formik = Form.createForm(
+        formData,
+        onSubmitSuccess,
+        onSubmitFailure,
+        beforeSend,
+        onComplete,
+        setLoading,
+        staticData
+    );
+
+    React.useEffect(() => {
+        if (triggerSubmit.current === true) {
+            triggerSubmit.current = false;
+
+            formik.submitForm();
+        }
+    });
 
     return (
         <FormContainer loading={loading} name={formData.name} onSubmit={formik.handleSubmit} className="search-form-container">

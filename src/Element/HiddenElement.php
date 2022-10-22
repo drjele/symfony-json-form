@@ -8,14 +8,15 @@ declare(strict_types=1);
 
 namespace Drjele\Symfony\JsonForm\Element;
 
+use Drjele\Symfony\JsonForm\Element\Contract\AbstractElement;
 use Drjele\Symfony\JsonForm\Exception\InvalidValueException;
 
 class HiddenElement extends AbstractElement
 {
     public function __construct(
-        protected readonly string $name,
-        protected readonly string $label,
+        string $name
     ) {
+        parent::__construct($name, null);
     }
 
     protected function getType(): string
@@ -26,7 +27,7 @@ class HiddenElement extends AbstractElement
     protected function renderElement(mixed $value): array
     {
         if (null !== $value && false === \is_scalar($value)) {
-            throw new InvalidValueException($this->name, $value);
+            throw new InvalidValueException($this->getName(), $value);
         }
 
         return [

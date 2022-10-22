@@ -8,6 +8,7 @@ declare(strict_types=1);
 
 namespace Drjele\Symfony\JsonForm\Element;
 
+use Drjele\Symfony\JsonForm\Element\Contract\AbstractElement;
 use Drjele\Symfony\JsonForm\Exception\InvalidModeException;
 
 class AutocompleteElement extends AbstractElement
@@ -21,13 +22,15 @@ class AutocompleteElement extends AbstractElement
     ];
 
     public function __construct(
-        protected readonly string $name,
-        protected readonly string $label,
+        string $name,
+        string $label,
         protected readonly string $route,
         protected readonly string $mode = self::MODE_SINGLE,
         protected readonly bool $required = true,
         protected readonly string $parameter = 'query'
     ) {
+        parent::__construct($name, $label);
+
         if (false === \in_array($this->mode, static::MODES, true)) {
             throw new InvalidModeException($name, $this->mode, static::MODES);
         }

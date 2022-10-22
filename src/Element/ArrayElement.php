@@ -8,6 +8,7 @@ declare(strict_types=1);
 
 namespace Drjele\Symfony\JsonForm\Element;
 
+use Drjele\Symfony\JsonForm\Element\Contract\AbstractElement;
 use Drjele\Symfony\JsonForm\Exception\InvalidModeException;
 use Drjele\Symfony\JsonForm\Exception\InvalidValueException;
 
@@ -23,12 +24,14 @@ class ArrayElement extends AbstractElement
     ];
 
     public function __construct(
-        protected readonly string $name,
-        protected readonly string $label,
+        string $name,
+        string $label,
         protected readonly array $options,
         protected readonly string $mode = self::MODE_SINGLE,
         protected readonly bool $required = true
     ) {
+        parent::__construct($name, $label);
+
         if (false === \in_array($this->mode, static::MODES, true)) {
             throw new InvalidModeException($name, $this->mode, static::MODES);
         }
@@ -46,7 +49,7 @@ class ArrayElement extends AbstractElement
 
             /* @todo refactor for multi level array */
             if (false === empty($diff = \array_diff($value, \array_keys($this->options)))) {
-                throw new InvalidValueException($this->name, $diff);
+                throw new InvalidValueException($this->getName(), $diff);
             }
             /* @todo add more validations */
         }

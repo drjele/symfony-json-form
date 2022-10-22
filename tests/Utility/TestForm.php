@@ -23,7 +23,7 @@ use Drjele\Symfony\JsonForm\Element\PrototypeCollectionElement;
 use Drjele\Symfony\JsonForm\Element\StringElement;
 use Drjele\Symfony\JsonForm\Form\Action;
 use Drjele\Symfony\JsonForm\Form\Form;
-use Drjele\Symfony\JsonForm\Service\AbstractFormService;
+use Drjele\Symfony\JsonForm\Service\Contract\AbstractFormService;
 use Symfony\Component\HttpFoundation\Request;
 
 class TestForm extends AbstractFormService

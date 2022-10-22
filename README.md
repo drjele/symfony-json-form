@@ -4,6 +4,11 @@
 
 Any suggestions are welcomed.
 
+## Purpose
+
+The purpose of this library is to create forms for single page applications, with a symfony backend.
+The forms are constructed in the backend and serialized to json, that can be rendered in the frontend. In the assets folder you can find a react component to render the form.
+
 ## Usage
 
 Add this to your **services.yaml**.
@@ -11,7 +16,7 @@ Add this to your **services.yaml**.
 ```yaml
 services:
     _instanceof:
-        Drjele\Symfony\JsonForm\Service\AbstractFormService:
+        Drjele\Symfony\JsonForm\Service\Contract\AbstractFormService:
             calls:
                 - [ setSerializer, [ '@serializer' ] ]
 ```
@@ -113,12 +118,12 @@ declare(strict_types=1);
 
 namespace Acme\Form;
 
+use Acme\Dto\ProductEditDto;
 use Drjele\Symfony\JsonForm\Element\ArrayElement;
 use Drjele\Symfony\JsonForm\Element\NumberElement;
 use Drjele\Symfony\JsonForm\Form\Action;
 use Drjele\Symfony\JsonForm\Form\Form;
-use Drjele\Symfony\JsonForm\Service\AbstractFormService;
-use Acme\Dto\ProductEditDto;
+use Drjele\Symfony\JsonForm\Service\Contract\AbstractFormService;
 
 class ProductEditForm extends AbstractFormService
 {
