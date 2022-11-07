@@ -32,7 +32,7 @@ trait ElementCollectionTrait
         $elements = [];
 
         foreach ($this->elements as $element) {
-            $elements[] = $element->render($value[$element->getName()] ?? null);
+            $elements[$element->getName()] = $element->render($value[$element->getName()] ?? null);
         }
 
         return $elements;
