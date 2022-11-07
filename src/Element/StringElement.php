@@ -9,15 +9,19 @@ declare(strict_types=1);
 namespace Drjele\Symfony\JsonForm\Element;
 
 use Drjele\Symfony\JsonForm\Element\Contract\AbstractElement;
+use Drjele\Symfony\JsonForm\Element\Traits\ReadonlyTrait;
+use Drjele\Symfony\JsonForm\Element\Traits\RequiredTrait;
 use Drjele\Symfony\JsonForm\Exception\InvalidValueException;
 
 /** base text input html element */
 class StringElement extends AbstractElement
 {
+    use ReadonlyTrait;
+    use RequiredTrait;
+
     public function __construct(
         string $name,
-        string $label,
-        protected readonly bool $required = true
+        string $label
     ) {
         parent::__construct($name, $label);
     }
@@ -34,6 +38,7 @@ class StringElement extends AbstractElement
         }
 
         return [
+            'readonly' => $this->readonly,
             'required' => $this->required,
             'value' => $value,
         ];

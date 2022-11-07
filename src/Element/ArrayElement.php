@@ -9,12 +9,17 @@ declare(strict_types=1);
 namespace Drjele\Symfony\JsonForm\Element;
 
 use Drjele\Symfony\JsonForm\Element\Contract\AbstractElement;
+use Drjele\Symfony\JsonForm\Element\Traits\ReadonlyTrait;
+use Drjele\Symfony\JsonForm\Element\Traits\RequiredTrait;
 use Drjele\Symfony\JsonForm\Exception\InvalidModeException;
 use Drjele\Symfony\JsonForm\Exception\InvalidValueException;
 
 /** select html element */
 class ArrayElement extends AbstractElement
 {
+    use ReadonlyTrait;
+    use RequiredTrait;
+
     public const MODE_SINGLE = 'single';
     public const MODE_MULTIPLE = 'multiple';
 
@@ -27,8 +32,7 @@ class ArrayElement extends AbstractElement
         string $name,
         string $label,
         protected readonly array $options,
-        protected readonly string $mode = self::MODE_SINGLE,
-        protected readonly bool $required = true
+        protected readonly string $mode = self::MODE_SINGLE
     ) {
         parent::__construct($name, $label);
 
@@ -57,6 +61,7 @@ class ArrayElement extends AbstractElement
         return [
             'options' => $this->options,
             'mode' => $this->mode,
+            'readonly' => $this->readonly,
             'required' => $this->required,
             'value' => $value,
         ];

@@ -9,10 +9,15 @@ declare(strict_types=1);
 namespace Drjele\Symfony\JsonForm\Element;
 
 use Drjele\Symfony\JsonForm\Element\Contract\AbstractElement;
+use Drjele\Symfony\JsonForm\Element\Traits\ReadonlyTrait;
+use Drjele\Symfony\JsonForm\Element\Traits\RequiredTrait;
 use Drjele\Symfony\JsonForm\Exception\InvalidModeException;
 
 class AutocompleteElement extends AbstractElement
 {
+    use ReadonlyTrait;
+    use RequiredTrait;
+
     public const MODE_SINGLE = 'single';
     public const MODE_MULTIPLE = 'multiple';
 
@@ -26,7 +31,6 @@ class AutocompleteElement extends AbstractElement
         string $label,
         protected readonly string $route,
         protected readonly string $mode = self::MODE_SINGLE,
-        protected readonly bool $required = true,
         protected readonly string $parameter = 'query'
     ) {
         parent::__construct($name, $label);
@@ -51,6 +55,7 @@ class AutocompleteElement extends AbstractElement
             'route' => $this->route,
             'parameter' => $this->parameter,
             'mode' => $this->mode,
+            'readonly' => $this->readonly,
             'required' => $this->required,
             'value' => $value,
         ];

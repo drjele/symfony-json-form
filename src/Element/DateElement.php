@@ -10,10 +10,15 @@ namespace Drjele\Symfony\JsonForm\Element;
 
 use DateTime;
 use Drjele\Symfony\JsonForm\Element\Contract\AbstractElement;
+use Drjele\Symfony\JsonForm\Element\Traits\ReadonlyTrait;
+use Drjele\Symfony\JsonForm\Element\Traits\RequiredTrait;
 use Drjele\Symfony\JsonForm\Exception\InvalidValueException;
 
 class DateElement extends AbstractElement
 {
+    use ReadonlyTrait;
+    use RequiredTrait;
+
     public const FORMAT_Y_M_D = 'Y-m-d';
     public const FORMAT_D_M_Y = 'd-m-Y';
 
@@ -22,8 +27,7 @@ class DateElement extends AbstractElement
         string $label,
         protected readonly string $format = self::FORMAT_Y_M_D,
         protected readonly ?string $min = null,
-        protected readonly ?string $max = null,
-        protected readonly bool $required = true
+        protected readonly ?string $max = null
     ) {
         parent::__construct($name, $label);
     }
@@ -43,6 +47,7 @@ class DateElement extends AbstractElement
             'format' => $this->format,
             'min' => $this->min,
             'max' => $this->max,
+            'readonly' => $this->readonly,
             'required' => $this->required,
             'value' => $value,
         ];

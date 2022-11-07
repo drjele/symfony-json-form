@@ -20,7 +20,7 @@ class PrototypeCollectionElement extends AbstractElement
     public function __construct(
         string $name,
         string $label,
-        protected readonly bool $renderDefault = true
+        protected readonly bool $renderEmpty = true
     ) {
         parent::__construct($name, $label);
     }
@@ -42,7 +42,7 @@ class PrototypeCollectionElement extends AbstractElement
             $elements[] = $this->renderElements($v);
         }
 
-        if (true === $this->renderDefault && null === $value) {
+        if (true === $this->renderEmpty && null === $value) {
             $elements[] = $this->renderElements([]);
         }
 

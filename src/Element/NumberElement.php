@@ -9,17 +9,21 @@ declare(strict_types=1);
 namespace Drjele\Symfony\JsonForm\Element;
 
 use Drjele\Symfony\JsonForm\Element\Contract\AbstractElement;
+use Drjele\Symfony\JsonForm\Element\Traits\ReadonlyTrait;
+use Drjele\Symfony\JsonForm\Element\Traits\RequiredTrait;
 use Drjele\Symfony\JsonForm\Exception\InvalidValueException;
 
 class NumberElement extends AbstractElement
 {
+    use ReadonlyTrait;
+    use RequiredTrait;
+
     public function __construct(
         string $name,
         string $label,
         protected readonly ?float $min = null,
         protected readonly ?float $max = null,
-        protected readonly ?float $step = null,
-        protected readonly bool $required = true
+        protected readonly ?float $step = null
     ) {
         parent::__construct($name, $label);
     }
@@ -39,6 +43,7 @@ class NumberElement extends AbstractElement
             'min' => $this->min,
             'max' => $this->max,
             'step' => $this->step,
+            'readonly' => $this->readonly,
             'required' => $this->required,
             'value' => $value,
         ];
