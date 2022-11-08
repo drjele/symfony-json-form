@@ -38,8 +38,8 @@ class PrototypeCollectionElement extends AbstractElement
 
         $elements = [];
 
-        foreach (($value ?? []) as $v) {
-            $elements[] = $this->renderElements($v);
+        foreach (($value ?? []) as $key => $v) {
+            $elements[$key] = $this->renderElements($v);
         }
 
         if (true === $this->renderEmpty && null === $value) {
