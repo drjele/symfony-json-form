@@ -17,7 +17,19 @@ import Translator from "./Translator";
 import UrlGenerator from "./UrlGenerator";
 import {HttpClient, HttpRequest} from "../service/HttpClient";
 
-const AutocompleteField = ({form, name, label, route, routeParameter, mode, required, ...props}) => {
+const AutocompleteField = (
+    {
+        name,
+        label,
+        route,
+        routeParameter,
+        mode,
+        required,
+        readonly,
+        onChange,
+        ...props
+    }
+) => {
     const isMounted = React.useRef(false);
     React.useEffect(() => {
         isMounted.current = true;
@@ -44,7 +56,9 @@ const AutocompleteField = ({form, name, label, route, routeParameter, mode, requ
                 (response) => {
                     const data = HttpClient.getDataFromResponse(response);
                     if (data === null) {
-                        return [];
+                        setOptions([]);
+
+                        return;
                     }
 
                     setOptions(data);
@@ -65,51 +79,75 @@ const AutocompleteField = ({form, name, label, route, routeParameter, mode, requ
                           id={name}
                           name={name}
                           options={options}
+                          onChange={onChange}
                           onInputChange={onInputChange}
-                          getOptionLabel={option => option.label}
+                          getOptionLabel={(option) => option.label}
                           autoHighlight={true}
                           isOptionEqualToValue={(option, value) => option.id === value.id}
-                          onChange={(e, value) => {
-                              const values = [];
-
-                              if (value) {
-                                  if (value.id !== undefined) {
-                                      values.push(value.id);
-                                  } else if (Array.isArray(value)) {
-                                      value.map(v => values.push(v.id))
-                                  } else {
-                                      throw new Exception("invalid value for `" + name + "`");
-                                  }
-                              }
-
-                              form.setFieldValue(name, values);
-                          }}
-                          renderInput={params => (
-                              <TextFieldBase label={label} required={required} {...params}/>
+                          renderInput={(params) => (
+                              <TextFieldBase label={label}
+                                             required={required}
+                                             aria-readonly={readonly}
+                                             InputProps={{"readOnly": readonly}}
+                                             {...params}
+                              />
                           )}
                           defaultValue={null}
+                          readOnly={readonly}
                           {...props}
         />
     );
 }
 
-const TextField = ({form, type, name, label, value, required, ...props}) => {
+const TextField = (
+    {
+        type,
+        name,
+        label,
+        value,
+        required,
+        readonly,
+        onChange,
+        error,
+        helperText,
+        inputProps,
+        ...props
+    }
+) => {
     return (
-        <TextFieldBase id={name}
+        <TextFieldBase type={type}
+                       id={name}
                        name={name}
                        label={label}
-                       required={required}
-                       type={type}
                        value={value}
-                       onChange={form.handleChange}
-                       error={form.touched[name] && Boolean(form.errors[name])}
-                       helperText={form.touched[name] && form.errors[name]}
+                       required={required}
+                       aria-readonly={readonly}
+                       InputProps={
+                           {
+                               "readOnly": readonly,
+                               ...inputProps
+                           }
+                       }
+                       onChange={onChange}
+                       error={error}
+                       helperText={helperText}
                        {...props}
         />
     );
 }
 
-const MultipleSelectField = ({form, name, label, options, value, required, ...props}) => {
+const MultipleSelectField = (
+    {
+        name,
+        label,
+        options,
+        value,
+        required,
+        readonly,
+        onChange,
+        ...props
+    }
+) => {
     const labelId = name + "Label";
     let lastRenderedGroup = null;
     const optionsComponents = [];
@@ -133,16 +171,17 @@ const MultipleSelectField = ({form, name, label, options, value, required, ...pr
     return (
         <FormControl required={required}>
             <InputLabel id={labelId}>{label}</InputLabel>
-            <Select multiple
-                    labelId={labelId}
-                    id={name}
+            <Select id={name}
                     name={name}
                     value={value}
-                    onChange={form.handleChange}
+                    readOnly={readonly}
+                    onChange={onChange}
                     input={<OutlinedInput label={label}/>}
-                    renderValue={selected => (
+                    multiple
+                    labelId={labelId}
+                    renderValue={(selected) => (
                         <Box className="d-flex flex-wrap gap-2">
-                            {selected.map(value => (
+                            {selected.map((value) => (
                                 <Chip key={value} label={options.indexed[value]}/>
                             ))}
                         </Box>
@@ -163,13 +202,26 @@ const MultipleSelectField = ({form, name, label, options, value, required, ...pr
     );
 }
 
-const SelectField = ({form, name, label, options, value, mode, required, ...props}) => {
+const SelectField = (
+    {
+        name,
+        label,
+        options,
+        value,
+        mode,
+        required,
+        readonly,
+        onChange,
+        ...props
+    }
+) => {
     const translator = new Translator();
 
     const processOptions = (options) => {
         let groupBy = false;
         const groupedOptions = [];
         const indexedOptions = {};
+
         Object.entries(options).map(([id, optionData]) => {
             if (typeof optionData === "string") {
                 const translatedLabel = translator.translate(optionData);
@@ -206,33 +258,38 @@ const SelectField = ({form, name, label, options, value, mode, required, ...prop
                                   name={name}
                                   value={value}
                                   options={processedOptions.grouped}
-                                  groupBy={option => processedOptions.groupBy === true ? option.key : null}
-                                  getOptionLabel={option => (option.label !== undefined ? option.label : (processedOptions.indexed[option] !== undefined ? processedOptions.indexed[option] : ""))}
+                                  groupBy={(option) => processedOptions.groupBy === true ? option.key : null}
+                                  getOptionLabel={(option) => (option.label !== undefined ? option.label : (processedOptions.indexed[option] !== undefined ? processedOptions.indexed[option] : ""))}
                                   autoHighlight={true}
                                   isOptionEqualToValue={(option, value) => option.id?.toString() === value?.toString()}
-                                  onChange={(e, value) => {
-                                      form.setFieldValue(name, value ? value.id : null);
-                                  }}
-                                  renderInput={params => (
-                                      <TextFieldBase label={label} required={required} {...params}/>
+                                  onChange={onChange}
+                                  renderInput={(params) => (
+                                      <TextFieldBase label={label}
+                                                     required={required}
+                                                     aria-readonly={readonly}
+                                                     InputProps={{"readOnly": readonly}}
+                                                     {...params}
+                                      />
                                   )}
                                   defaultValue={null}
+                                  readOnly={readonly}
                                   {...props}
                 />
             );
         case Element.ARRAY_MULTIPLE:
             return (
-                <MultipleSelectField form={form}
-                                     name={name}
+                <MultipleSelectField name={name}
                                      label={label}
                                      options={processedOptions}
                                      value={value}
                                      required={required}
+                                     readOnly={readonly}
+                                     onChange={onChange}
                                      {...props}
                 />
             );
         default:
-            throw new Exception("invalid array element mode `" + element.mode + "` for `" + name + "`");
+            throw new Exception("invalid array element mode `" + mode + "` for `" + name + "`");
     }
 }
 
@@ -356,7 +413,7 @@ export class FormBuilder {
                     case Element.PROTOTYPE_COLLECTION:
                         initialValues[name] = {}
 
-                        element.elements.map((elementsCollection, index) =>
+                        Object.entries(element.elements).map(([index, elementsCollection]) =>
                             initialValues[name][index] = FormBuilder.computeInitialValues(elementsCollection)
                         )
                         break;
@@ -405,16 +462,26 @@ export class FormBuilder {
     }
 }
 
-export const FormContainer = ({children, loading, name, onSubmit, className, loadingClassName, ...props}) => {
+export const FormContainer = (
+    {
+        children,
+        loading,
+        formName,
+        onSubmit,
+        containerClassName,
+        loadingClassName,
+        ...props
+    }
+) => {
     const classNames = ["form-container"];
-    if (className !== undefined) {
-        classNames.push(className);
+    if (containerClassName !== undefined) {
+        classNames.push(containerClassName);
     }
 
     return (
         <Box className={classNames.join(" ")} {...props}>
             <BlockUi open={loading} className={"h-100 w-100" + (loadingClassName ? " " + loadingClassName : "")}>
-                <form name={name}
+                <form name={formName}
                       onSubmit={onSubmit}
                       autoComplete="off"
                       className="d-flex flex-column gap-1 p-0 m-0 h-100 w-100"
@@ -426,7 +493,13 @@ export const FormContainer = ({children, loading, name, onSubmit, className, loa
     );
 }
 
-export const FormFieldsContainer = ({children, className, ...props}) => {
+export const FormFieldsContainer = (
+    {
+        children,
+        className,
+        ...props
+    }
+) => {
     const classNames = ["form-fields-container", "d-flex flex-wrap gap-1 align-items-center"];
     if (className !== undefined) {
         classNames.push(className);
@@ -439,7 +512,12 @@ export const FormFieldsContainer = ({children, className, ...props}) => {
     );
 }
 
-export const FormControl = ({children, ...props}) => {
+export const FormControl = (
+    {
+        children,
+        ...props
+    }
+) => {
     return (
         <FormControlBase fullWidth {...props}>
             {children}
@@ -447,7 +525,13 @@ export const FormControl = ({children, ...props}) => {
     );
 }
 
-export const FormFields = ({form, elements, parents}) => {
+export const FormFields = (
+    {
+        form,
+        elements,
+        parents
+    }
+) => {
     const getNestedValueByPath = (object, path) => {
         if (path === undefined || path.length === 0) {
             return object;
@@ -480,7 +564,14 @@ export const FormFields = ({form, elements, parents}) => {
     );
 }
 
-export const FormField = ({form, element, value, parents}) => {
+export const FormField = (
+    {
+        form,
+        element,
+        value,
+        parents
+    }
+) => {
     const translator = new Translator();
 
     const buildName = (element, parents) => {
@@ -492,32 +583,71 @@ export const FormField = ({form, element, value, parents}) => {
     const formControlClassNames = ["form-control"];
 
     const name = buildName(element, parents);
-    const label = translator.translate(element.label);
-    const required = false /* element.required !== undefined ? element.required : false */;
+    const label = element.label ? translator.translate(element.label) : null;
+    const readonly = element.readonly !== undefined ? element.readonly : false;
+    const required = element.required !== undefined ? element.required : false;
+    const onChange = (event, value) => {
+        element.onChange && element.onChange(value);
+
+        switch (element.type) {
+            case Element.ARRAY:
+                switch (element.mode) {
+                    case Element.ARRAY_SINGLE:
+                        form.setFieldValue(name, value ? value.id : null);
+                        break;
+                    default:
+                        form.handleChange(event, value);
+                        break;
+                }
+                break;
+            case Element.AUTOCOMPLETE:
+                const values = [];
+
+                if (value) {
+                    if (value.id !== undefined) {
+                        values.push(value.id);
+                    } else if (Array.isArray(value)) {
+                        value.map(v => values.push(v.id))
+                    } else {
+                        throw new Exception("invalid value for `" + name + "`");
+                    }
+                }
+
+                form.setFieldValue(name, values);
+                break;
+            default:
+                form.handleChange(event, value);
+                break;
+        }
+    }
+    const error = form.touched[name] && Boolean(form.errors[name]);
+    const helperText = form.touched[name] && form.errors[name];
 
     let formField;
     switch (element.type) {
         case Element.ARRAY:
             formField = (
-                <SelectField form={form}
-                             name={name}
+                <SelectField name={name}
                              label={label}
-                             value={value}
                              options={element.options}
+                             value={value}
                              mode={element.mode}
                              required={required}
+                             readonly={readonly}
+                             onChange={onChange}
                 />
             );
             break;
         case Element.AUTOCOMPLETE:
             formField = (
-                <AutocompleteField form={form}
-                                   name={name}
+                <AutocompleteField name={name}
                                    label={label}
                                    route={element.route}
                                    routeParameter={element.parameter}
                                    mode={element.mode}
                                    required={required}
+                                   readonly={readonly}
+                                   onChange={onChange}
                 />
             );
             break;
@@ -527,11 +657,9 @@ export const FormField = ({form, element, value, parents}) => {
                     <Checkbox id={name}
                               name={name}
                               checked={value}
-                              onChange={(event, value) => {
-                                  element.onChange && element.onChange(value);
-
-                                  form.handleChange(event, value);
-                              }}
+                              required={required}
+                              readOnly={readonly}
+                              onChange={onChange}
                               inputProps={{"aria-label": "controlled"}}
                     />
                 }
@@ -541,7 +669,7 @@ export const FormField = ({form, element, value, parents}) => {
             break;
         case Element.COLLECTION:
             formField = (
-                <Box key={name + "Collection"}>
+                <Box key={name + "Collection"} className="d-flex flex-column gap-1">
                     <FormFields form={form}
                                 elements={element.elements}
                                 parents={[...parents, element.name]}
@@ -551,22 +679,30 @@ export const FormField = ({form, element, value, parents}) => {
             break;
         case Element.DATE:
             const dateFormat = Element.computeDateFormat(element.format);
+            const dateOnChange = (value) => {
+                const formattedValue = value?.format(dateFormat);
+
+                element.onChange && element.onChange(formattedValue);
+
+                form.setFieldValue(name, formattedValue);
+            };
 
             formField = (
                 <LocalizationProvider dateAdapter={AdapterDayjs}>
                     <DesktopDatePicker label={label}
                                        inputFormat={dateFormat}
                                        value={value ? value : null}
-                                       onChange={(value) => {
-                                           form.setFieldValue(name, value?.format(dateFormat), true);
-                                       }}
+                                       onChange={dateOnChange}
                                        minDate={element.min}
                                        maxDate={element.max}
+                                       readOnly={readonly}
                                        renderInput={(params) =>
                                            (
                                                <TextFieldBase id={name}
                                                               name={name}
                                                               required={required}
+                                                              aria-readonly={readonly}
+                                                              InputProps={{"readOnly": readonly}}
                                                               {...params}
                                                />
                                            )}
@@ -576,22 +712,30 @@ export const FormField = ({form, element, value, parents}) => {
             break;
         case Element.DATE_TIME:
             const dateTimeFormat = Element.computeDateTimeFormat(element.format);
+            const dateTimeOnChange = (value) => {
+                const formattedValue = value?.format(dateTimeFormat);
+
+                element.onChange && element.onChange(formattedValue);
+
+                form.setFieldValue(name, value?.format(dateTimeFormat));
+            };
 
             formField = (
                 <LocalizationProvider dateAdapter={AdapterDayjs}>
                     <DateTimePicker label={label}
                                     inputFormat={dateTimeFormat}
                                     value={value ? value : null}
-                                    onChange={(value) => {
-                                        form.setFieldValue(name, value?.format(dateTimeFormat), true);
-                                    }}
+                                    onChange={dateTimeOnChange}
                                     minDate={element.min}
                                     maxDate={element.max}
+                                    readOnly={readonly}
                                     renderInput={(params) =>
                                         (
                                             <TextFieldBase id={name}
                                                            name={name}
                                                            required={required}
+                                                           aria-readonly={readonly}
+                                                           InputProps={{"readOnly": readonly}}
                                                            {...params}
                                             />
                                         )}
@@ -601,12 +745,15 @@ export const FormField = ({form, element, value, parents}) => {
             break;
         case Element.FILE:
             formField = (
-                <TextField form={form}
-                           type="file"
+                <TextField type="file"
                            name={name}
                            label={label}
                            value={value}
                            required={required}
+                           readonly={readonly}
+                           onChange={onChange}
+                           error={error}
+                           helperText={helperText}
                            InputLabelProps={{"shrink": true}}
                 />
             );
@@ -615,46 +762,55 @@ export const FormField = ({form, element, value, parents}) => {
             formControlClassNames.push("hidden");
 
             formField = (
-                <TextField form={form}
-                           type="hidden"
+                <TextField type="hidden"
                            name={name}
                            label={label}
                            value={value}
                            required={required}
+                           readonly={readonly}
+                           onChange={onChange}
+                           error={error}
+                           helperText={helperText}
                 />
             );
             break;
         case Element.LABEL:
-            formField = label + (value ? ": " + value : "");
+            formField = value ? value : label;
             break;
         case Element.NUMBER:
             formField = (
-                <TextField form={form}
-                           type="number"
+                <TextField type="number"
                            name={name}
                            label={label}
                            value={value}
                            required={required}
-                           InputProps={{"inputProps": {"min": element.min, "max": element.max, "step": element.step}}}
+                           readonly={readonly}
+                           onChange={onChange}
+                           error={error}
+                           helperText={helperText}
+                           inputProps={{"inputProps": {"min": element.min, "max": element.max, "step": element.step}}}
                 />
             );
             break;
         case Element.PASSWORD:
             formField = (
-                <TextField form={form}
-                           type="password"
+                <TextField type="password"
                            name={name}
                            label={label}
                            value={value}
                            required={required}
+                           readonly={readonly}
+                           onChange={onChange}
+                           error={error}
+                           helperText={helperText}
                 />
             );
             break;
         case Element.PROTOTYPE_COLLECTION:
             formField = (
-                <Box key={name + "PrototypeCollection"}>{
-                    element.elements.map((elementsCollection, index) =>
-                        <Box key={index}>
+                <Box key={name + "PrototypeCollection"} className="d-flex flex-column gap-1">{
+                    Object.entries(element.elements).map(([index, elementsCollection]) =>
+                        <Box key={index} className="d-flex align-items-center gap-1">
                             <FormFields form={form}
                                         elements={elementsCollection}
                                         parents={[...parents, element.name, index]}
@@ -667,12 +823,15 @@ export const FormField = ({form, element, value, parents}) => {
             break;
         case Element.STRING:
             formField = (
-                <TextField form={form}
-                           type="text"
+                <TextField type="text"
                            name={name}
                            label={label}
                            value={value}
                            required={required}
+                           readonly={readonly}
+                           onChange={onChange}
+                           error={error}
+                           helperText={helperText}
                 />
             );
             break;
@@ -690,7 +849,12 @@ export const FormField = ({form, element, value, parents}) => {
     );
 }
 
-export const FormButtons = ({form, buttons}) => {
+export const FormButtons = (
+    {
+        form,
+        buttons
+    }
+) => {
     const translator = new Translator();
 
     buttons = buttons === undefined ? {[Button.SUBMIT]: "wms.button.ok"} : buttons;
@@ -798,7 +962,7 @@ export const Form = (
 
     return (
         <FormContainer loading={loading}
-                       name={data.name}
+                       formName={data.name}
                        onSubmit={form.handleSubmit}
         >
             <FormFieldsContainer className="flex-column">
@@ -870,9 +1034,9 @@ export const FormCard = (
 
     return (
         <FormContainer loading={loading}
-                       name={data.name}
+                       formName={data.name}
                        onSubmit={form.handleSubmit}
-                       className="card-form-container"
+                       containerClassName="card-form-container"
                        loadingClassName="overflow-hidden border-radius-1"
         >
             <Box className="card">
