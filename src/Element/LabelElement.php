@@ -15,7 +15,7 @@ class LabelElement extends AbstractElement
 {
     public function __construct(
         string $name,
-        string $label
+        string $label = null
     ) {
         parent::__construct($name, $label);
     }
