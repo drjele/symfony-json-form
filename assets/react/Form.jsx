@@ -74,8 +74,10 @@ const AutocompleteField = (
         setOptions([]);
     }
 
+    const multiple = mode === Element.ARRAY_MULTIPLE;
+
     return (
-        <AutocompleteBase multiple={mode === Element.ARRAY_MULTIPLE}
+        <AutocompleteBase multiple={multiple}
                           id={name}
                           name={name}
                           options={options}
@@ -92,7 +94,7 @@ const AutocompleteField = (
                                              {...params}
                               />
                           )}
-                          defaultValue={null}
+                          defaultValue={multiple ? [] : null}
                           readOnly={readonly}
                           {...props}
         />
@@ -300,6 +302,10 @@ export class Button {
 
     static get RESET() {
         return "reset";
+    }
+
+    static get CANCEL() {
+        return "cancel";
     }
 }
 
@@ -587,38 +593,41 @@ export const FormField = (
     const readonly = element.readonly !== undefined ? element.readonly : false;
     const required = element.required !== undefined ? element.required : false;
     const onChange = (event, value) => {
-        element.onChange && element.onChange(value);
+        let processedValue = undefined;
 
         switch (element.type) {
             case Element.ARRAY:
                 switch (element.mode) {
                     case Element.ARRAY_SINGLE:
-                        form.setFieldValue(name, value ? value.id : null);
-                        break;
-                    default:
-                        form.handleChange(event, value);
+                        processedValue = value ? value.id : null;
                         break;
                 }
                 break;
             case Element.AUTOCOMPLETE:
-                const values = [];
+                processedValue = [];
 
                 if (value) {
                     if (value.id !== undefined) {
-                        values.push(value.id);
+                        processedValue.push(value.id);
                     } else if (Array.isArray(value)) {
-                        value.map(v => values.push(v.id))
+                        value.map(v => processedValue.push(v.id))
                     } else {
                         throw new Exception("invalid value for `" + name + "`");
                     }
                 }
-
-                form.setFieldValue(name, values);
-                break;
-            default:
-                form.handleChange(event, value);
                 break;
         }
+
+        if (processedValue !== undefined) {
+            form.setFieldValue(name, processedValue);
+        } else {
+            form.handleChange(event);
+        }
+
+        element.onChange && element.onChange(
+            event,
+            processedValue !== undefined ? processedValue : event.target.value
+        );
     }
     const error = form.touched[name] && Boolean(form.errors[name]);
     const helperText = form.touched[name] && form.errors[name];
@@ -861,46 +870,53 @@ export const FormButtons = (
 
     return (
         <FormControl>
-            <Box textAlign="center">{
-                Object.entries(buttons).map(([type, label]) => {
-                        let icon = null;
-                        let onClick = null;
+            <Box className="d-flex align-items-center justify-content-center gap-1">
+                {
+                    Object.entries(buttons).map(([type, button]) => {
+                            const [icon, label, onClick] = button;
 
-                        if (Array.isArray(label)) {
-                            [icon, label, onClick] = label;
+                            switch (type) {
+                                case Button.SUBMIT:
+                                    return (
+                                        <ButtonBase key={type}
+                                                    type="submit"
+                                                    color="primary"
+                                                    variant="contained"
+                                                    fullWidth={buttons.length === 1}
+                                                    onClick={() => onClick && onClick()}
+                                        >
+                                            {icon}{translator.translate(label)}
+                                        </ButtonBase>
+                                    );
+                                case Button.RESET:
+                                    return (
+                                        <ButtonBase key={type}
+                                                    type="reset"
+                                                    color="secondary"
+                                                    onClick={() => {
+                                                        form.resetForm();
+
+                                                        onClick && onClick()
+                                                    }}
+                                        >
+                                            {icon}{translator.translate(label)}
+                                        </ButtonBase>
+                                    );
+                                case Button.CANCEL:
+                                    return (
+                                        <ButtonBase key={type}
+                                                    type="button"
+                                                    color="error"
+                                                    variant="outlined"
+                                                    onClick={() => onClick && onClick()}
+                                        >
+                                            {icon}{translator.translate(label)}
+                                        </ButtonBase>
+                                    );
+                            }
                         }
-
-                        switch (type) {
-                            case Button.SUBMIT:
-                                return (
-                                    <ButtonBase key={type}
-                                                type="submit"
-                                                color="primary"
-                                                variant="contained"
-                                                fullWidth={buttons.length === 1}
-                                                onClick={() => onClick && onClick()}
-                                    >
-                                        {icon}{translator.translate(label)}
-                                    </ButtonBase>
-                                );
-                            case Button.RESET:
-                                return (
-                                    <ButtonBase key={type}
-                                                type="reset"
-                                                color="secondary"
-                                                onClick={() => {
-                                                    form.resetForm();
-
-                                                    onClick && onClick()
-                                                }}
-                                    >
-                                        {icon}{translator.translate(label)}
-                                    </ButtonBase>
-                                );
-                        }
-                    }
-                )
-            }
+                    )
+                }
             </Box>
         </FormControl>
     );
