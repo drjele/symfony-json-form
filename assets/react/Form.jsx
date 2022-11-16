@@ -535,6 +535,7 @@ export const FormFields = (
     {
         form,
         elements,
+        renderProps,
         parents
     }
 ) => {
@@ -556,6 +557,8 @@ export const FormFields = (
         return result;
     }
 
+    renderProps = renderProps === undefined ? {} : renderProps;
+
     parents = parents === undefined ? [] : parents;
     const initialValues = getNestedValueByPath(form.values, parents);
 
@@ -564,6 +567,7 @@ export const FormFields = (
                        form={form}
                        element={element}
                        value={initialValues[element.name]}
+                       renderProps={renderProps[element.name]}
                        parents={parents}
             />
         )
@@ -575,6 +579,7 @@ export const FormField = (
         form,
         element,
         value,
+        renderProps,
         parents
     }
 ) => {
@@ -586,7 +591,12 @@ export const FormField = (
         return [...prefix, element.name].join(".");
     }
 
+    renderProps = renderProps === undefined ? {} : renderProps;
+
     const formControlClassNames = ["form-control"];
+    if (renderProps.formControlClassName !== undefined) {
+        formControlClassNames.push(renderProps.formControlClassName);
+    }
 
     const name = buildName(element, parents);
     const label = element.label ? translator.translate(element.label) : null;
@@ -624,13 +634,14 @@ export const FormField = (
             form.handleChange(event);
         }
 
-        element.onChange && element.onChange(
+        renderProps.onChange && renderProps.onChange(
             event,
             processedValue !== undefined ? processedValue : event.target.value
         );
     }
     const error = form.touched[name] && Boolean(form.errors[name]);
     const helperText = form.touched[name] && form.errors[name];
+    const elementClassName = renderProps.className !== undefined ? " " + renderProps.className : "";
 
     let formField;
     switch (element.type) {
@@ -677,11 +688,14 @@ export const FormField = (
             );
             break;
         case Element.COLLECTION:
+            formControlClassNames.push("col-100");
+
             formField = (
-                <Box key={name + "Collection"} className="d-flex flex-column gap-1">
+                <Box key={name + "Collection"} className={"d-flex gap-1" + elementClassName}>
                     <FormFields form={form}
                                 elements={element.elements}
                                 parents={[...parents, element.name]}
+                                renderProps={renderProps.elements}
                     />
                 </Box>
             );
@@ -823,6 +837,7 @@ export const FormField = (
                             <FormFields form={form}
                                         elements={elementsCollection}
                                         parents={[...parents, element.name, index]}
+                                        renderProps={renderProps.elements}
                             />
                         </Box>
                     )
@@ -1004,7 +1019,8 @@ export const FormCard = (
         onComplete,
         blockOnSubmit,
         triggerSubmit,
-        staticData
+        staticData,
+        renderProps
     }
 ) => {
     const isMounted = React.useRef(false);
@@ -1059,6 +1075,7 @@ export const FormCard = (
                 <FormFieldsContainer className="card-body p-block-1 flex-wrap">
                     <FormFields form={form}
                                 elements={data.elements}
+                                renderProps={renderProps}
                     />
                 </FormFieldsContainer>
 
