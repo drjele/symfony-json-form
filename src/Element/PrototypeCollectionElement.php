@@ -20,6 +20,7 @@ class PrototypeCollectionElement extends AbstractElement
     public function __construct(
         string $name,
         string $label,
+        private readonly ?string $key = null
     ) {
         parent::__construct($name, $label);
     }
@@ -42,6 +43,7 @@ class PrototypeCollectionElement extends AbstractElement
         }
 
         return [
+            'key' => $this->key ?? $this->getName(),
             'elements' => $elements,
             'prototype' => $this->renderElements([]),
         ];
