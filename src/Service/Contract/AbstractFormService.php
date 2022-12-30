@@ -31,14 +31,14 @@ abstract class AbstractFormService
 
     abstract protected function build(Form $form, DtoInterface $dto): void;
 
-    final public function setSerializer(SerializerInterface $serializer): self
+    public function setSerializer(SerializerInterface $serializer): self
     {
         $this->serializer = $serializer;
 
         return $this;
     }
 
-    final public function render(DtoInterface $dto = null): array
+    public function render(DtoInterface $dto = null): array
     {
         if (null === $dto) {
             $dtoClass = $this->getDtoClass();
@@ -63,7 +63,7 @@ abstract class AbstractFormService
         return $form->render($data);
     }
 
-    final public function handleRequest(
+    public function handleRequest(
         Request $request,
         DtoInterface $dto = null,
         bool $sanitizeData = true

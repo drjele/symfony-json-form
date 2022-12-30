@@ -68,7 +68,7 @@ class TestForm extends AbstractFormService
             )
             ->addElement(new DateElement('date', 'date label'))
             ->addElement(new FileElement('file', 'file label'))
-            ->addElement(new HiddenElement('hidden', 'hidden label'))
+            ->addElement(new HiddenElement('hidden'))
             ->addElement(new LabelElement('label', 'label label'))
             ->addElement(new NumberElement('number', 'number label', 1, 10, 1))
             ->addElement(new PasswordElement('password', 'password label'))
