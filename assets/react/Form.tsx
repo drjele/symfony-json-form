@@ -1042,7 +1042,7 @@ export const FormButtons: React.FunctionComponent<FormButtonsProps> = (props) =>
     const languageContext = React.useContext(LanguageContext);
 
     const buttonsList: ButtonListType =
-        props.buttons === undefined ? {[ButtonTypeEnum.SUBMIT]: [<Icon name="check"/>, "wms.button.ok"]} : props.buttons;
+        props.buttons === undefined ? {[ButtonTypeEnum.SUBMIT]: [<Icon name="check"/>, "button.ok"]} : props.buttons;
     /** @info hack for ts compiler */
     const buttons: [string, [React.ReactElement, string, NullaryType?]][] = Object.entries(buttonsList);
 
