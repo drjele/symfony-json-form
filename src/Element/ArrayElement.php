@@ -51,8 +51,9 @@ class ArrayElement extends AbstractElement
         if (null !== $value) {
             $value = (array)$value;
 
-            /* @todo refactor for multi level array */
-            if (false === empty($diff = \array_diff($value, \array_keys($this->options)))) {
+            if (false === empty($diff = \array_diff($value, $this->getOptionsValues()))) {
+                \print_r([$value, $this->getOptionsValues()]);
+
                 throw new InvalidValueException($this->getName(), $diff);
             }
             /* @todo add more validations */
@@ -65,5 +66,21 @@ class ArrayElement extends AbstractElement
             'required' => $this->required,
             'value' => $value,
         ];
+    }
+
+    private function getOptionsValues(): array
+    {
+        $optionsValues = [];
+
+        foreach ($this->options as $key => $value) {
+            if (true === \is_array($value)) {
+                $optionsValues = \array_merge($optionsValues, \array_keys($value));
+                continue;
+            }
+
+            $optionsValues[] = $key;
+        }
+
+        return $optionsValues;
     }
 }
