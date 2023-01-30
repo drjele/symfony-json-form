@@ -1,6 +1,6 @@
 "use strict";
 
-import "./css/blockui.scss";
+import "../../../css/shared/blockui.scss";
 
 /** external libraries */
 import React from "react";

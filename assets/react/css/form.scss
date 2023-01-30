@@ -1,5 +1,3 @@
-@import './variables';
-
 .form-container
 {
     &.card-form-container
@@ -9,10 +7,16 @@
             flex: 1 0 20%;
             vertical-align: middle;
             align-items: center;
+            padding-top: 0.25rem;
 
             > div
             {
                 width: 100%;
+            }
+
+            &.align-items-baseline
+            {
+                align-items: baseline;
             }
         }
     }

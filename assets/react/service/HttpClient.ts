@@ -11,7 +11,7 @@ import WarehouseContext from "../context/WarehouseContext";
 import AlertContext, {AlertContextType} from "../context/AlertContext";
 import {NullableNumberType, NullableStringType} from "../type/Scalar";
 import {MapType, NullableMapType} from "../type/Map";
-import {FormDataType} from "../component/Form"
+import {FormDataType} from "../form/Form"
 import {NullableStringArrayType} from "../type/Array";
 import {NullableNullaryType, NullaryType} from "../type/Function";
 
