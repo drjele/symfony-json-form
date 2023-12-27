@@ -48,7 +48,7 @@ abstract class AbstractFormService
 
         $formName = $this->getName();
 
-        if (\get_class($dto) !== $this->getDtoClass()) {
+        if ($dto::class !== $this->getDtoClass()) {
             throw new Exception(\sprintf('invalid dto class for form `%s`', $formName));
         }
 

@@ -27,7 +27,7 @@ class InvalidValueException extends Exception
             case \is_array($value):
                 return \implode(', ', $value);
             case \is_object($value):
-                return \get_class($value);
+                return $value::class;
         }
 
         return \sprintf('unknown type `%s`', \gettype($value));

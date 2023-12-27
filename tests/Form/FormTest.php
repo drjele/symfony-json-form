@@ -8,7 +8,6 @@ declare(strict_types=1);
 
 namespace Drjele\Symfony\JsonForm\Test\Form;
 
-use Doctrine\Common\Annotations\AnnotationReader;
 use Drjele\Symfony\JsonForm\Test\Utility\TestDto;
 use Drjele\Symfony\JsonForm\Test\Utility\TestForm;
 use PHPUnit\Framework\TestCase;
@@ -17,8 +16,6 @@ use Symfony\Component\PropertyInfo\Extractor\PhpDocExtractor;
 use Symfony\Component\PropertyInfo\Extractor\ReflectionExtractor;
 use Symfony\Component\PropertyInfo\PropertyInfoExtractor;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
-use Symfony\Component\Serializer\Mapping\Factory\ClassMetadataFactory;
-use Symfony\Component\Serializer\Mapping\Loader\AnnotationLoader;
 use Symfony\Component\Serializer\Normalizer\ArrayDenormalizer;
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 use Symfony\Component\Serializer\Serializer;
@@ -52,11 +49,10 @@ final class FormTest extends TestCase
 
     private function getSerializer(): Serializer
     {
-        $classMetadataFactory = new ClassMetadataFactory(new AnnotationLoader(new AnnotationReader()));
         $extractor = new PropertyInfoExtractor([], [new PhpDocExtractor(), new ReflectionExtractor()]);
         $normalizers = [
             new ArrayDenormalizer(),
-            new ObjectNormalizer($classMetadataFactory, null, null, $extractor),
+            new ObjectNormalizer(null, null, null, $extractor),
         ];
 
         $encoders = [new JsonEncoder()];
