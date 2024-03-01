@@ -13,8 +13,7 @@ final class Action
     public function __construct(
         private readonly string $route,
         private readonly ?array $parameters = null
-    ) {
-    }
+    ) {}
 
     public function render(): array
     {

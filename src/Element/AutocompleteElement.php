@@ -48,7 +48,7 @@ class AutocompleteElement extends AbstractElement
     protected function renderElement(mixed $value): array
     {
         if (null !== $value) {
-            $value = (array)$value;
+            $value = (array) $value;
         }
 
         return [

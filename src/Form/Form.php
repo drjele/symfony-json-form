@@ -18,8 +18,7 @@ final class Form
         private readonly string $name,
         private readonly string $method,
         private readonly Action $action
-    ) {
-    }
+    ) {}
 
     public function render($data): array
     {

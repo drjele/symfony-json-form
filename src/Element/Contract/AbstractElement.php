@@ -15,8 +15,7 @@ abstract class AbstractElement
     public function __construct(
         private readonly string $name,
         private readonly ?string $label
-    ) {
-    }
+    ) {}
 
     abstract protected function getType(): string;
 
