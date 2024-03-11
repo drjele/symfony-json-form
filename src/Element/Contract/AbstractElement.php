@@ -15,7 +15,8 @@ abstract class AbstractElement
     public function __construct(
         private readonly string $name,
         private readonly ?string $label
-    ) {}
+    ) {
+    }
 
     abstract protected function getType(): string;
 
@@ -35,9 +36,9 @@ abstract class AbstractElement
         }
 
         return [
-            'type' => $this->getType(),
-            'name' => $this->name,
-            'label' => $this->label,
-        ] + $this->renderElement($value);
+                'type' => $this->getType(),
+                'name' => $this->name,
+                'label' => $this->label,
+            ] + $this->renderElement($value);
     }
 }

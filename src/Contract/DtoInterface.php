@@ -8,4 +8,6 @@ declare(strict_types=1);
 
 namespace Drjele\Symfony\JsonForm\Contract;
 
-interface DtoInterface {}
+interface DtoInterface
+{
+}

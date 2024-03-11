@@ -49,7 +49,7 @@ class ArrayElement extends AbstractElement
     protected function renderElement(mixed $value): array
     {
         if (null !== $value) {
-            $value = (array) $value;
+            $value = (array)$value;
 
             if (false === empty($diff = \array_diff($value, $this->getOptionsValues()))) {
                 \print_r([$value, $this->getOptionsValues()]);
