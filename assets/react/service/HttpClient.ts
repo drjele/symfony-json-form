@@ -7,7 +7,6 @@ import React from "react";
 /** internal components */
 import logger from "./Logger";
 import UserContext from "../context/UserContext";
-import WarehouseContext from "../context/WarehouseContext";
 import AlertContext, {AlertContextType} from "../context/AlertContext";
 import {NullableNumberType, NullableStringType} from "../type/Scalar";
 import {MapType, NullableMapType} from "../type/Map";
@@ -132,16 +131,13 @@ declare global {
 
 class HttpClient {
     private accessToken: NullableStringType;
-    private warehouse: NullableNumberType;
     private alertContext: AlertContextType;
 
     constructor(
         accessToken: NullableStringType,
-        warehouse: NullableNumberType,
         alertContext: AlertContextType
     ) {
         this.accessToken = accessToken;
-        this.warehouse = warehouse;
         this.alertContext = alertContext;
     }
 
@@ -243,9 +239,6 @@ class HttpClient {
         if (this.accessToken) {
             headers["X-AUTH-TOKEN"] = this.accessToken;
         }
-        if (this.warehouse) {
-            headers["X-WAREHOUSE"] = this.warehouse.toString();
-        }
 
         return {
             url: httpRequest.getUrl(),
@@ -317,12 +310,10 @@ class HttpClient {
 
 export const useHttpClient = (): HttpClient => {
     const userContext = React.useContext(UserContext);
-    const warehouseContext = React.useContext(WarehouseContext);
     const alertContext = React.useContext(AlertContext);
 
     return new HttpClient(
         userContext.user.accessToken,
-        warehouseContext.getWarehouse(),
         alertContext
     );
 }

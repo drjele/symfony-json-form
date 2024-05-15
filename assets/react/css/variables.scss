@@ -1,0 +1,52 @@
+/** start generic */
+$white: #FFFFFF !default;
+$gray-100: #F8F9FA !default;
+$gray-200: #E9ECEF !default;
+$gray-300: #DEE2E6 !default;
+$gray-400: #CED4DA !default;
+$gray-500: #ADB5BD !default;
+$gray-600: #6C757D !default;
+$gray-700: #495057 !default;
+$gray-800: #343A40 !default;
+$gray-900: #212529 !default;
+$black: #000000 !default;
+
+$blue: #0D6EFD !default;
+$indigo: #6610F2 !default;
+$purple: #6F42C1 !default;
+$pink: #D63384 !default;
+$red: #DC3545 !default;
+$orange: #FD7E14 !default;
+$yellow: #FFC107 !default;
+$green: #198754 !default;
+$teal: #20C997 !default;
+$cyan: #0DCAF0 !default;
+
+$primary: $blue !default;
+$secondary: $gray-600 !default;
+$success: $green !default;
+$info: $cyan !default;
+$warning: $yellow !default;
+$danger: $red !default;
+/** end generic */
+
+$font-family: Arial, serif;
+$font-size: 16px;
+
+$gray: #EEEDED;
+$gray-light: $gray-100;
+
+$primary: $primary;
+$secondary: $secondary;
+$danger: $danger;
+$warning: $warning;
+$success: $success;
+
+$base-unit: 0.25rem;
+
+$border-width: 1px;
+$border-radius: 4px;
+
+$padding: $base-unit;
+
+$margin: $base-unit;

@@ -8,6 +8,10 @@ Any suggestions are welcomed.
 
 The purpose of this library is to create forms for single page applications, with a symfony backend.
 The forms are constructed in the backend and serialized to json, that can be rendered in the frontend. In the assets folder you can find a react component to render the form.
+There are 2 versions of the form:
+
+* [formV1](./assets/react/formV1), is the original react components for rendering the form, kept for backwards compatibility.
+* [formV2](./assets/react/formV2), the new components and the recommended way to render the json.
 
 ## Usage
 
