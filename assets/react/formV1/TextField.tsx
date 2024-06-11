@@ -1,12 +1,12 @@
-"use strict";
+'use strict';
 
+import {InputLabelProps, TextField as TextFieldBase} from '@mui/material';
+import {InputProps as StandardInputProps} from '@mui/material/Input/Input';
 /** external libraries */
-import React, {HTMLInputTypeAttribute} from "react";
-import {InputProps as StandardInputProps} from "@mui/material/Input/Input";
-import {InputLabelProps, TextField as TextFieldBase} from "@mui/material";
+import React, {HTMLInputTypeAttribute} from 'react';
 
 /** internal components */
-import {FieldType} from "./Types";
+import {FieldType} from './Types';
 
 type TextFieldProps = FieldType & {
     type: HTMLInputTypeAttribute
@@ -50,4 +50,4 @@ export const TextField: React.FunctionComponent<TextFieldProps> = (props) => {
                        inputRef={inputRef}
         />
     );
-}
+};

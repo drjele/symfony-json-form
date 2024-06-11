@@ -6,7 +6,7 @@ declare(strict_types=1);
  * Copyright (c) Adrian Jeledintan
  */
 
-namespace Drjele\Symfony\JsonForm\Element\Traits;
+namespace Drjele\Symfony\JsonForm\Element\Trait;
 
 trait RequiredTrait
 {

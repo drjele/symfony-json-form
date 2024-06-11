@@ -1,17 +1,17 @@
-"use strict";
+'use strict';
 
+import {Box, Button as ButtonBase} from '@mui/material';
 /** external libraries */
-import React from "react";
-import {Box, Button as ButtonBase} from "@mui/material";
+import React from 'react';
+import {buttonErrorOutlined, resetSecondary, submitPrimaryOutlined} from '../component/Button';
+import Icon from '../component/Icon';
 
 /** internal components */
-import LanguageContext from "../context/LanguageContext";
-import Icon from "../component/Icon";
-import {NullaryType} from "../type/Function";
-import {buttonErrorOutlined, resetSecondary, submitPrimaryOutlined} from "../component/Button";
-import logger from "../service/Logger";
-import {ButtonListType, ButtonTypeEnum, FormType} from "./Types";
-import {FormControl} from "./FormControl";
+import LanguageContext from '../context/LanguageContext';
+import logger from '../service/Logger';
+import {NullaryType} from '../type/Function';
+import {FormControl} from './FormControl';
+import {ButtonListType, ButtonTypeEnum, FormType} from './Types';
 
 type FormButtonsProps = {
     form: FormType
@@ -22,7 +22,7 @@ export const FormButtons: React.FunctionComponent<FormButtonsProps> = (props) =>
     const languageContext = React.useContext(LanguageContext);
 
     const buttonsList: ButtonListType =
-        props.buttons === undefined ? {[ButtonTypeEnum.SUBMIT]: [<Icon name="check"/>, "button.ok"]} : props.buttons;
+        props.buttons === undefined ? {[ButtonTypeEnum.SUBMIT]: [<Icon name="check"/>, 'button.ok']} : props.buttons;
     /** @info hack for ts compiler */
     const buttons: [string, [React.ReactElement, string, NullaryType?]][] = Object.entries(buttonsList);
 
@@ -49,7 +49,7 @@ export const FormButtons: React.FunctionComponent<FormButtonsProps> = (props) =>
                                                 onClick={() => {
                                                     props.form.resetForm();
 
-                                                    onClick && onClick()
+                                                    onClick && onClick();
                                                 }}
                                     >
                                         {icon}{languageContext.translate(label)}
@@ -73,4 +73,4 @@ export const FormButtons: React.FunctionComponent<FormButtonsProps> = (props) =>
             </Box>
         </FormControl>
     );
-}
+};

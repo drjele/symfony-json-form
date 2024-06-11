@@ -1,38 +1,38 @@
-"use strict";
+'use strict';
 
+import {AutocompleteChangeDetails, AutocompleteChangeReason} from '@mui/base/AutocompleteUnstyled/useAutocomplete';
+import {SelectChangeEvent} from '@mui/material/Select/SelectInput';
 /** external libraries */
-import {FormikProps, FormikValues} from "formik";
-import React from "react";
-import {SelectChangeEvent} from "@mui/material/Select/SelectInput";
-import {AutocompleteChangeDetails, AutocompleteChangeReason} from "@mui/base/AutocompleteUnstyled/useAutocomplete";
+import {FormikProps, FormikValues} from 'formik';
+import React from 'react';
+import {HttpRequestTypeEnum} from '../service/HttpClient';
+import {StringArrayType} from '../type/Array';
+import {NullaryType} from '../type/Function';
+import {MapType, NullableMapType} from '../type/Map';
+import {BooleanRefType} from '../type/React';
 
 /** internal components */
-import {StringNumberType} from "../type/Scalar";
-import {BooleanRefType} from "../type/React";
-import {MapType, NullableMapType} from "../type/Map";
-import {HttpRequestTypeEnum} from "../service/HttpClient";
-import {StringArrayType} from "../type/Array";
-import {NullaryType} from "../type/Function";
+import {StringNumberType} from '../type/Scalar';
 
 export enum ElementTypeEnum {
-    ARRAY = "array",
-    AUTOCOMPLETE = "autocomplete",
-    BOOL = "bool",
-    COLLECTION = "collection",
-    DATE = "date",
-    DATE_TIME = "dateTime",
-    FILE = "file",
-    HIDDEN = "hidden",
-    LABEL = "label",
-    NUMBER = "number",
-    PASSWORD = "password",
-    PROTOTYPE_COLLECTION = "prototypeCollection",
-    STRING = "string"
+    ARRAY = 'array',
+    AUTOCOMPLETE = 'autocomplete',
+    BOOL = 'bool',
+    COLLECTION = 'collection',
+    DATE = 'date',
+    DATE_TIME = 'dateTime',
+    FILE = 'file',
+    HIDDEN = 'hidden',
+    LABEL = 'label',
+    NUMBER = 'number',
+    PASSWORD = 'password',
+    PROTOTYPE_COLLECTION = 'prototypeCollection',
+    STRING = 'string'
 }
 
 export enum ElementModeEnum {
-    SINGLE = "single",
-    MULTIPLE = "multiple"
+    SINGLE = 'single',
+    MULTIPLE = 'multiple'
 }
 
 export type SelectOptionsType = {
@@ -128,9 +128,9 @@ export type FieldType = FocusType & {
 }
 
 export enum ButtonTypeEnum {
-    SUBMIT = "submit",
-    RESET = "reset",
-    CANCEL = "cancel"
+    SUBMIT = 'submit',
+    RESET = 'reset',
+    CANCEL = 'cancel'
 }
 
 export type ButtonType = [React.ReactElement, string, NullaryType?];

@@ -1,18 +1,18 @@
-"use strict";
+'use strict';
 
+import {AutocompleteValue as AutocompleteValueBase} from '@mui/base/AutocompleteUnstyled/useAutocomplete';
+import {Autocomplete as AutocompleteBase, Box, Checkbox, Chip, InputLabel, ListItemText, ListSubheader, MenuItem, OutlinedInput, Select, TextField as TextFieldBase} from '@mui/material';
 /** external libraries */
-import React from "react";
-import {AutocompleteValue as AutocompleteValueBase} from "@mui/base/AutocompleteUnstyled/useAutocomplete";
-import {Autocomplete as AutocompleteBase, Box, Checkbox, Chip, InputLabel, ListItemText, ListSubheader, MenuItem, OutlinedInput, Select, TextField as TextFieldBase} from "@mui/material";
+import React from 'react';
+import LanguageContext from '../context/LanguageContext';
+import Exception from '../exception/Exception';
+import {StringArrayType} from '../type/Array';
+import {MapType} from '../type/Map';
 
 /** internal components */
-import {NullableStringType, StringNumberType} from "../type/Scalar";
-import {MapType} from "../type/Map";
-import LanguageContext from "../context/LanguageContext";
-import {StringArrayType} from "../type/Array";
-import Exception from "../exception/Exception";
-import {ElementModeEnum, FieldType, OnChangeAutocompleteType, SelectOptionsType} from "./Types";
-import {FormControl} from "./FormControl";
+import {NullableStringType, StringNumberType} from '../type/Scalar';
+import {FormControl} from './FormControl';
+import {ElementModeEnum, FieldType, OnChangeAutocompleteType, SelectOptionsType} from './Types';
 
 type SelectFieldProps = FieldType & {
     options: SelectOptionsType
@@ -42,7 +42,7 @@ export const SelectField: React.FunctionComponent<SelectFieldProps> = (props) =>
         const indexedOptions: MapType<string> = {};
 
         Object.entries(options).map(([id, optionData]) => {
-            if (typeof optionData === "string") {
+            if (typeof optionData === 'string') {
                 const translatedLabel = languageContext.translate(optionData);
 
                 groupedOptions.push({id: id, label: translatedLabel, key: null});
@@ -57,7 +57,7 @@ export const SelectField: React.FunctionComponent<SelectFieldProps> = (props) =>
                     groupedOptions.push({id: childId, label: translatedLabel, key: id});
 
                     indexedOptions[childId] = translatedLabel;
-                })
+                });
             }
         });
 
@@ -65,8 +65,8 @@ export const SelectField: React.FunctionComponent<SelectFieldProps> = (props) =>
             groupBy: groupBy,
             grouped: groupedOptions,
             indexed: indexedOptions
-        }
-    }
+        };
+    };
 
     const processedOptions = processOptions(props.options);
 
@@ -78,7 +78,7 @@ export const SelectField: React.FunctionComponent<SelectFieldProps> = (props) =>
                     id: props.value,
                     label: processedOptions.indexed[props.value],
                     key: null
-                }
+                };
             }
 
             return (
@@ -104,7 +104,7 @@ export const SelectField: React.FunctionComponent<SelectFieldProps> = (props) =>
                 />
             );
         case ElementModeEnum.MULTIPLE:
-            const labelId: string = props.name + "Label";
+            const labelId: string = props.name + 'Label';
             let lastRenderedGroup: NullableStringType = null;
             const optionsComponents: React.ReactElement[] = [];
 
@@ -122,7 +122,7 @@ export const SelectField: React.FunctionComponent<SelectFieldProps> = (props) =>
                         </MenuItem>
                     ));
                 }
-            )
+            );
 
             return (
                 <FormControl required={props.required}>
@@ -139,7 +139,7 @@ export const SelectField: React.FunctionComponent<SelectFieldProps> = (props) =>
                             renderValue={(selected: StringArrayType) => (
                                 <Box className="d-flex flex-wrap gap-2">
                                     {selected.map((value) => (
-                                        <Chip key={value} label={<>{processedOptions.indexed[value]}</>} sx={{height: "22px"}}/>
+                                        <Chip key={value} label={<>{processedOptions.indexed[value]}</>} sx={{height: '22px'}}/>
                                     ))}
                                 </Box>
                             )}
@@ -159,4 +159,4 @@ export const SelectField: React.FunctionComponent<SelectFieldProps> = (props) =>
         default:
             throw new Exception(`invalid array element mode "${props.mode}" for "${props.name}"`);
     }
-}
+};

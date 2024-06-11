@@ -1,6 +1,7 @@
 {
     "name": "drjele/symfony-json-form",
     "type": "symfony-bundle",
+    "version": "v5.0.0",
     "description": "Forms that serialize to json for frontend frameworks with symfony api backends",
     "keywords": [
         "symfony",
@@ -17,8 +18,8 @@
     ],
     "require": {
         "php": ">=8.2",
-        "symfony/http-foundation": "^4.0|^5.0|^6.0|^7.0",
-        "symfony/serializer": "^4.0|^5.0|^6.0|^7.0",
+        "symfony/http-foundation": "7.*",
+        "symfony/serializer": "7.*",
         "symfony/translation-contracts": "3.*"
     },
     "require-dev": {
@@ -27,7 +28,7 @@
         "phpdocumentor/reflection-docblock": "5.*",
         "phpstan/phpstan": "1.*",
         "squizlabs/php_codesniffer": "3.*",
-        "symfony/property-access": "^4.0|^5.0|^6.0|^7.0"
+        "symfony/property-access": "7.*"
     },
     "autoload": {
         "psr-4": {

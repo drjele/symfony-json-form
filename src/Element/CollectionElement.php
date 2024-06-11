@@ -10,7 +10,7 @@ namespace Drjele\Symfony\JsonForm\Element;
 
 use Drjele\Symfony\JsonForm\Element\Contract\AbstractElement;
 use Drjele\Symfony\JsonForm\Exception\InvalidValueException;
-use Drjele\Symfony\JsonForm\Traits\ElementCollectionTrait;
+use Drjele\Symfony\JsonForm\Trait\ElementCollectionTrait;
 
 /** used for nested elements */
 class CollectionElement extends AbstractElement

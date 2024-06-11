@@ -1,51 +1,51 @@
 @import "./variables";
 
 #root .form-container {
-    &.card-form-container {
-        .form-control {
-            flex: 1 0 20%;
-            vertical-align: middle;
-            align-items: center;
-        }
-    }
-
+  &.card-form-container {
     .form-control {
-        padding-top: $base-unit;
+      flex: 1 0 20%;
+      vertical-align: middle;
+      align-items: center;
+    }
+  }
 
-        > div {
-            width: 100%;
-        }
+  .form-control {
+    padding-top: $base-unit;
 
-        &.align-items-baseline {
-            align-items: baseline;
-        }
-
-        label {
-            margin: 0;
-        }
-
-        &.full-width-label label {
-            width: 100%;
-        }
-
-        &.checkbox-form-control {
-            label > span {
-                padding: 0;
-                margin: 0;
-            }
-        }
-
-        &.hover:hover label {
-            background-color: $gray-light;
-        }
+    > div {
+      width: 100%;
     }
 
-    .checkbox-icon {
-        height: 24px;
-        width: 24px;
-
-        &.highlight {
-            font-size: 1.2rem;
-        }
+    &.align-items-baseline {
+      align-items: baseline;
     }
+
+    label {
+      margin: 0;
+    }
+
+    &.full-width-label label {
+      width: 100%;
+    }
+
+    &.checkbox-form-control {
+      label > span {
+        padding: 0;
+        margin: 0;
+      }
+    }
+
+    &.hover:hover label {
+      background-color: $gray-light;
+    }
+  }
+
+  .checkbox-icon {
+    height: 24px;
+    width: 24px;
+
+    &.highlight {
+      font-size: 1.2rem;
+    }
+  }
 }

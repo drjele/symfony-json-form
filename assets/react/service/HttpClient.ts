@@ -1,18 +1,18 @@
-"use strict";
+'use strict';
 
 /** external libraries */
-import $ from "jquery";
-import React from "react";
+import $ from 'jquery';
+import React from 'react';
+import AlertContext, {AlertContextType} from '../context/AlertContext';
+import UserContext from '../context/UserContext';
+import {FormDataType} from '../form/Form';
+import {NullableStringArrayType} from '../type/Array';
+import {NullableNullaryType, NullaryType} from '../type/Function';
+import {MapType, NullableMapType} from '../type/Map';
+import {NullableStringType} from '../type/Scalar';
 
 /** internal components */
-import logger from "./Logger";
-import UserContext from "../context/UserContext";
-import AlertContext, {AlertContextType} from "../context/AlertContext";
-import {NullableNumberType, NullableStringType} from "../type/Scalar";
-import {MapType, NullableMapType} from "../type/Map";
-import {FormDataType} from "../form/Form"
-import {NullableStringArrayType} from "../type/Array";
-import {NullableNullaryType, NullaryType} from "../type/Function";
+import logger from './Logger';
 
 type ResponseType = MapType & {
     success: boolean,
@@ -24,8 +24,8 @@ export type OnSuccessType<T> = (response: T) => void;
 export type OnCompleteType<T> = (response: T) => void;
 
 export enum HttpRequestTypeEnum {
-    GET = "get",
-    POST = "post"
+    GET = 'get',
+    POST = 'post'
 }
 
 type HttpClientRequestType = JQuery.jqXHR;
@@ -52,61 +52,61 @@ export class HttpRequest<RT = ResponseType> {
 
     getUrl = (): string => {
         return this.url;
-    }
+    };
 
     getOnSuccess = (): OnSuccessType<RT> => {
         return this.onSuccess;
-    }
+    };
 
     getType = (): HttpRequestTypeEnum => {
         return this.type;
-    }
+    };
 
     getData = (): MapType => {
         return this.data;
-    }
+    };
 
     setData = (data: MapType): HttpRequest<RT> => {
         this.data = data;
 
         return this;
-    }
+    };
 
     getBeforeSend = (): NullableNullaryType => {
         return this.beforeSend;
-    }
+    };
 
     setBeforeSend = (beforeSend: NullaryType): HttpRequest<RT> => {
         this.beforeSend = beforeSend;
 
         return this;
-    }
+    };
 
     getOnComplete = (): OnCompleteType<MapType> => {
         return this.onComplete;
-    }
+    };
 
     setOnComplete = (complete: OnCompleteType<MapType>): HttpRequest<RT> => {
         this.onComplete = complete;
 
         return this;
-    }
+    };
 
     getOnError = (): NullableNullaryType => {
         return this.onError;
-    }
+    };
 
     setOnError = (error: NullaryType): HttpRequest<RT> => {
         this.onError = error;
 
         return this;
-    }
+    };
 
     setHttpClientRequest = (httpClientRequest: HttpClientRequestType): HttpRequest<RT> => {
         this.httpClientRequest = httpClientRequest;
 
         return this;
-    }
+    };
 
     abort = (message?: string): boolean => {
         if (this.httpClientRequest === null) {
@@ -120,12 +120,12 @@ export class HttpRequest<RT = ResponseType> {
         this.httpClientRequest = null;
 
         return true;
-    }
+    };
 }
 
 declare global {
     interface Navigator {
-        msSaveBlob?: (blob: unknown, defaultName?: string) => boolean
+        msSaveBlob?: (blob: unknown, defaultName?: string) => boolean;
     }
 }
 
@@ -145,7 +145,7 @@ class HttpClient {
         const data = this.getDataFromResponse<{ form?: FormDataType }>(response);
 
         return data?.form ? data.form : null;
-    }
+    };
 
     getDataFromResponse = <T>(response: ResponseType): T => {
         if (!response.success) {
@@ -155,7 +155,7 @@ class HttpClient {
         }
 
         return <T>response.data;
-    }
+    };
 
     download = (httpRequest: HttpRequest): void => {
         httpRequest.abort();
@@ -164,18 +164,18 @@ class HttpClient {
             {
                 ...this.buildAjaxRequest(httpRequest),
                 xhrFields: {
-                    responseType: "blob"
+                    responseType: 'blob'
                 },
                 success: (blob, status, xhr) => {
-                    let filename = "";
-                    const disposition = xhr.getResponseHeader("Content-Disposition");
+                    let filename = '';
+                    const disposition = xhr.getResponseHeader('Content-Disposition');
 
-                    if (disposition && disposition.indexOf("attachment") !== -1) {
+                    if (disposition && disposition.indexOf('attachment') !== -1) {
                         const filenameRegex = /filename[^;=\n]*=((["']).*?\2|[^;\n]*)/;
                         const matches = filenameRegex.exec(disposition);
 
                         if (matches != null && matches[1]) {
-                            filename = matches[1].replace(/["']/g, "");
+                            filename = matches[1].replace(/["']/g, '');
                         }
                     }
 
@@ -186,7 +186,7 @@ class HttpClient {
                         const downloadUrl = url.createObjectURL(blob);
 
                         if (filename) {
-                            const a = document.createElement("a");
+                            const a = document.createElement('a');
 
                             if (a.download === undefined) {
                                 window.location.href = downloadUrl;
@@ -214,7 +214,7 @@ class HttpClient {
         );
 
         httpRequest.setHttpClientRequest(ajax);
-    }
+    };
 
     send = (httpRequest: HttpRequest<any>): void => {
         httpRequest.abort();
@@ -222,13 +222,13 @@ class HttpClient {
         const ajax = $.ajax(
             {
                 ...this.buildAjaxRequest(httpRequest),
-                dataType: "json",
-                contentType: "application/json"
+                dataType: 'json',
+                contentType: 'application/json'
             }
         );
 
         httpRequest.setHttpClientRequest(ajax);
-    }
+    };
 
     private buildAjaxRequest = (httpRequest: HttpRequest): AjaxSettingsType => {
         const data = httpRequest.getType().toLowerCase() === HttpRequestTypeEnum.GET ? httpRequest.getData() : JSON.stringify(httpRequest.getData());
@@ -237,7 +237,7 @@ class HttpClient {
 
         const headers: MapType<string> = {};
         if (this.accessToken) {
-            headers["X-AUTH-TOKEN"] = this.accessToken;
+            headers['X-AUTH-TOKEN'] = this.accessToken;
         }
 
         return {
@@ -256,8 +256,8 @@ class HttpClient {
                 httpRequest.getOnSuccess() && httpRequest.getOnSuccess()(response);
             },
             error: (jqXhr, textStatus, errorThrown) => {
-                if (textStatus === "abort") {
-                    logger.info("http request aborted");
+                if (textStatus === 'abort') {
+                    logger.info('http request aborted');
                     return;
                 }
 
@@ -269,7 +269,7 @@ class HttpClient {
                     }
                 );
 
-                const errors = jqXhr.responseJSON?.errors ? jqXhr.responseJSON?.errors : "invalid backend response received";
+                const errors = jqXhr.responseJSON?.errors ? jqXhr.responseJSON?.errors : 'invalid backend response received';
 
                 this.error(errors);
 
@@ -280,12 +280,12 @@ class HttpClient {
                     this.getXhrJsonResponse(jqXhr)
                 );
             }
-        }
-    }
+        };
+    };
 
     private getXhrJsonResponse = (jqXhr: HttpClientRequestType): ResponseType => {
         return jqXhr && jqXhr.responseJSON ? jqXhr?.responseJSON : null;
-    }
+    };
 
     private error = (errors: string | string[] | null): void => {
         if (errors === null) {
@@ -305,7 +305,7 @@ class HttpClient {
         }
 
         this.alertContext.addError(errors as string);
-    }
+    };
 }
 
 export const useHttpClient = (): HttpClient => {
@@ -316,4 +316,4 @@ export const useHttpClient = (): HttpClient => {
         userContext.user.accessToken,
         alertContext
     );
-}
+};

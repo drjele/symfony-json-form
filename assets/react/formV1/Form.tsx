@@ -1,34 +1,34 @@
-"use strict";
+'use strict';
 
-import "../css/form.scss";
+import '../css/form.scss';
+import {Box} from '@mui/material';
+import {Form as FormBase, Formik, useFormikContext} from 'formik';
 
 /** external libraries */
-import React from "react";
-import {Form as FormBase, Formik, useFormikContext} from "formik";
-import {Box} from "@mui/material";
+import React from 'react';
 
 /** internal components */
-import BlockUi from "../component/BlockUi";
-import useUrlGenerator from "../service/UrlGenerator";
-import {HttpRequest, useHttpClient} from "../service/HttpClient";
-import {MapType} from "../type/Map";
-import {NullaryType, SetLoadingType} from "../type/Function";
-import {BooleanRefType} from "../type/React";
-import {ButtonListType, ElementListType, FormCallbacksType, FormDataType, FormRenderPropsType, FormType, OnSubmitFailureType, OnSubmitSuccessType} from "./Types";
-import {FormBuilder} from "./FormBuilder";
-import {FormFields, FormFieldsContainer} from "./FormField";
-import {FormButtons} from "./FormButtons";
+import BlockUi from '../component/BlockUi';
+import {HttpRequest, useHttpClient} from '../service/HttpClient';
+import useUrlGenerator from '../service/UrlGenerator';
+import {NullaryType, SetLoadingType} from '../type/Function';
+import {MapType} from '../type/Map';
+import {BooleanRefType} from '../type/React';
+import {FormBuilder} from './FormBuilder';
+import {FormButtons} from './FormButtons';
+import {FormFields, FormFieldsContainer} from './FormField';
+import {ButtonListType, ElementListType, FormCallbacksType, FormDataType, FormRenderPropsType, FormType, OnSubmitFailureType, OnSubmitSuccessType} from './Types';
 
-export * from "./Types";
-export * from "./FormBuilder";
-export * from "./AutocompleteField";
-export * from "./TextField";
-export * from "./SelectField";
-export * from "./DateField";
-export * from "./DateTimeField";
-export * from "./FormField";
-export * from "./FormControl";
-export * from "./FormButtons";
+export * from './Types';
+export * from './FormBuilder';
+export * from './AutocompleteField';
+export * from './TextField';
+export * from './SelectField';
+export * from './DateField';
+export * from './DateTimeField';
+export * from './FormField';
+export * from './FormControl';
+export * from './FormButtons';
 
 type FormContextType = {
     form: FormType
@@ -54,7 +54,7 @@ const FormContextProvider: React.FunctionComponent<React.PropsWithChildren & For
             {props.children}
         </FormContext.Provider>
     );
-}
+};
 
 type SharedFormProps = React.PropsWithChildren & {
     buttons: ButtonListType
@@ -89,7 +89,7 @@ const InnerForm: React.FunctionComponent<InnerFormProps> = (props) => {
         form.resetForm();
     }
 
-    const classNames = ["form-container"];
+    const classNames = ['form-container'];
     if (props.containerClassName !== undefined) {
         classNames.push(props.containerClassName);
     }
@@ -101,9 +101,9 @@ const InnerForm: React.FunctionComponent<InnerFormProps> = (props) => {
                              renderProps={props.renderProps}
                              callbacks={props.callbacks}
         >
-            <Box className={classNames.join(" ")}>
+            <Box className={classNames.join(' ')}>
                 <BlockUi open={props.loading}
-                         className={["h-100 w-100" + (props.loadingClassName ? props.loadingClassName : "")].join(" ")}
+                         className={['h-100 w-100' + (props.loadingClassName ? props.loadingClassName : '')].join(' ')}
                 >
                     <FormBase name={props.name}
                               onSubmit={form.handleSubmit}
@@ -116,7 +116,7 @@ const InnerForm: React.FunctionComponent<InnerFormProps> = (props) => {
             </Box>
         </FormContextProvider>
     );
-}
+};
 
 type FormProps = SharedFormProps & {
     data: FormDataType
@@ -175,7 +175,7 @@ export const Form: React.FunctionComponent<FormProps> = (props) => {
             });
 
         httpClient.send(httpRequest);
-    }
+    };
 
     return (
         <Formik initialValues={FormBuilder.computeInitialValues(props.data.elements)}
@@ -198,7 +198,7 @@ export const Form: React.FunctionComponent<FormProps> = (props) => {
             </InnerForm>
         </Formik>
     );
-}
+};
 
 const FormVerticalInner: React.FunctionComponent = () => {
     const formContext = React.useContext(FormContext);
@@ -218,7 +218,7 @@ const FormVerticalInner: React.FunctionComponent = () => {
             />
         </Box>
     );
-}
+};
 
 export const FormVertical: React.FunctionComponent<FormProps> = (props) => {
     return (
@@ -226,7 +226,7 @@ export const FormVertical: React.FunctionComponent<FormProps> = (props) => {
             <FormVerticalInner/>
         </Form>
     );
-}
+};
 
 const FormCardInner: React.FunctionComponent = () => {
     const formContext = React.useContext(FormContext);
@@ -252,7 +252,7 @@ const FormCardInner: React.FunctionComponent = () => {
             </Box>
         </Box>
     );
-}
+};
 
 export const FormCard: React.FunctionComponent<FormProps> = (props) => {
     return (
@@ -263,4 +263,4 @@ export const FormCard: React.FunctionComponent<FormProps> = (props) => {
             <FormCardInner/>
         </Form>
     );
-}
+};

@@ -8,7 +8,7 @@ declare(strict_types=1);
 
 namespace Drjele\Symfony\JsonForm\Form;
 
-use Drjele\Symfony\JsonForm\Traits\ElementCollectionTrait;
+use Drjele\Symfony\JsonForm\Trait\ElementCollectionTrait;
 
 final class Form
 {
@@ -18,7 +18,8 @@ final class Form
         private readonly string $name,
         private readonly string $method,
         private readonly Action $action
-    ) {}
+    ) {
+    }
 
     public function render($data): array
     {

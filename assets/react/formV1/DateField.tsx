@@ -1,14 +1,14 @@
-"use strict";
+'use strict';
 
+import {TextField as TextFieldBase} from '@mui/material';
+import {DesktopDatePicker, LocalizationProvider} from '@mui/x-date-pickers';
+import {AdapterDayjs} from '@mui/x-date-pickers/AdapterDayjs';
 /** external libraries */
-import React from "react";
-import {DesktopDatePicker, LocalizationProvider} from "@mui/x-date-pickers";
-import {AdapterDayjs} from "@mui/x-date-pickers/AdapterDayjs";
-import {TextField as TextFieldBase} from "@mui/material";
+import React from 'react';
+import {FormBuilder} from './FormBuilder';
 
 /** internal components */
-import {FieldType} from "./Types";
-import {FormBuilder} from "./FormBuilder";
+import {FieldType} from './Types';
 
 type DateFieldProps = FieldType & {
     format: string
@@ -44,4 +44,4 @@ export const DateField: React.FunctionComponent<DateFieldProps> = (props) => {
             />
         </LocalizationProvider>
     );
-}
+};

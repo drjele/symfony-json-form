@@ -10,8 +10,8 @@ namespace Drjele\Symfony\JsonForm\Element;
 
 use DateTime;
 use Drjele\Symfony\JsonForm\Element\Contract\AbstractElement;
-use Drjele\Symfony\JsonForm\Element\Traits\ReadonlyTrait;
-use Drjele\Symfony\JsonForm\Element\Traits\RequiredTrait;
+use Drjele\Symfony\JsonForm\Element\Trait\ReadonlyTrait;
+use Drjele\Symfony\JsonForm\Element\Trait\RequiredTrait;
 use Drjele\Symfony\JsonForm\Exception\InvalidValueException;
 
 class DateTimeElement extends AbstractElement

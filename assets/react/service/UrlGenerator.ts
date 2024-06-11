@@ -1,13 +1,13 @@
-"use strict";
+'use strict';
 
+import React from 'react';
 /** external libraries */
-import router from "../../../../public/bundles/fosjsrouting/js/router";
-import routes from "../../../../public/js/fos_js_routes.json";
+import router from '../../../../public/bundles/fosjsrouting/js/router';
+import routes from '../../../../public/js/fos_js_routes.json';
+import LanguageContext from '../context/LanguageContext';
 
 /** internal components */
-import {MapType} from "../type/Map";
-import React from "react";
-import LanguageContext from "../context/LanguageContext";
+import {MapType} from '../type/Map';
 
 router.setRoutingData(routes);
 
@@ -22,10 +22,10 @@ class UrlGenerator {
         parameters = {
             _locale: this.locale,
             ...parameters
-        }
+        };
 
         return router.generate(route, parameters, true);
-    }
+    };
 }
 
 const useUrlGenerator = () => {
@@ -34,6 +34,6 @@ const useUrlGenerator = () => {
     const locale = languageContext.getLocale();
 
     return new UrlGenerator(locale);
-}
+};
 
 export default useUrlGenerator;

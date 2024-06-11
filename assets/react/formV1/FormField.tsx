@@ -1,24 +1,24 @@
-"use strict";
+'use strict';
 
+import {Box, Checkbox, FormControlLabel} from '@mui/material';
+import {FastField, FieldArray, FormikValues} from 'formik';
 /** external libraries */
-import React from "react";
-import {Box, Checkbox, FormControlLabel} from "@mui/material";
-import {FastField, FieldArray, FormikValues} from "formik";
+import React from 'react';
+import LanguageContext from '../context/LanguageContext';
+import Exception from '../exception/Exception';
 
 /** internal components */
-import {StringArrayType} from "../type/Array";
-import LanguageContext from "../context/LanguageContext";
-import {NullableNumberType, NullableStringType} from "../type/Scalar";
-import {BooleanRefType} from "../type/React";
-import Exception from "../exception/Exception";
-import {ElementListType, ElementModeEnum, ElementType, ElementTypeEnum, FormFieldCallbacksType, FormFieldRenderPropsType, FormFieldsCallbacksType, FormFieldsRenderPropsType, FormFieldValueType, FormType, OnChangeCallbackType} from "./Types";
-import {FormControl} from "./FormControl";
-import {SelectField} from "./SelectField";
-import {AutocompleteField} from "./AutocompleteField";
-import {DateField} from "./DateField";
-import {DateTimeField} from "./DateTimeField";
-import {TextField} from "./TextField";
-import {FormBuilder} from "./FormBuilder";
+import {StringArrayType} from '../type/Array';
+import {BooleanRefType} from '../type/React';
+import {NullableNumberType, NullableStringType} from '../type/Scalar';
+import {AutocompleteField} from './AutocompleteField';
+import {DateField} from './DateField';
+import {DateTimeField} from './DateTimeField';
+import {FormBuilder} from './FormBuilder';
+import {FormControl} from './FormControl';
+import {SelectField} from './SelectField';
+import {TextField} from './TextField';
+import {ElementListType, ElementModeEnum, ElementType, ElementTypeEnum, FormFieldCallbacksType, FormFieldRenderPropsType, FormFieldsCallbacksType, FormFieldsRenderPropsType, FormFieldValueType, FormType, OnChangeCallbackType} from './Types';
 
 type FormFieldProps = {
     form: FormType
@@ -36,10 +36,10 @@ export const FormField: React.FunctionComponent<FormFieldProps> = (props) => {
     const buildName = (element: ElementType, parents: StringArrayType): string => {
         const prefix = parents === undefined ? [] : parents;
 
-        return [...prefix, element.name].join(".");
-    }
+        return [...prefix, element.name].join('.');
+    };
 
-    const formControlClassNames: StringArrayType = ["form-control"];
+    const formControlClassNames: StringArrayType = ['form-control'];
     if (props.renderProps?.formControlClassName !== undefined) {
         formControlClassNames.push(props.renderProps?.formControlClassName);
     }
@@ -68,7 +68,7 @@ export const FormField: React.FunctionComponent<FormFieldProps> = (props) => {
                     if (value.id !== undefined) {
                         processedValue.push(value.id);
                     } else if (Array.isArray(value) === true) {
-                        value.map(v => processedValue.push(v.id))
+                        value.map(v => processedValue.push(v.id));
                     } else {
                         throw new Exception(`invalid value for "${name}"`);
                     }
@@ -96,10 +96,10 @@ export const FormField: React.FunctionComponent<FormFieldProps> = (props) => {
             event,
             processedValue !== undefined ? processedValue : event.target.value
         );
-    }
+    };
     const error: boolean = props.form.touched[name] && Boolean(props.form.errors[name]);
     const helperText = props.form.touched[name] && props.form.errors[name];
-    const elementClassName: string = props.renderProps?.className !== undefined ? " " + props.renderProps.className : "";
+    const elementClassName: string = props.renderProps?.className !== undefined ? ' ' + props.renderProps.className : '';
 
     switch (props.element.type) {
         case ElementTypeEnum.ARRAY:
@@ -108,7 +108,7 @@ export const FormField: React.FunctionComponent<FormFieldProps> = (props) => {
                     {() => (
                         <FormControl key={name}
                                      required={required}
-                                     className={formControlClassNames.join(" ")}
+                                     className={formControlClassNames.join(' ')}
                         >
                             <SelectField name={name}
                                          label={label}
@@ -130,7 +130,7 @@ export const FormField: React.FunctionComponent<FormFieldProps> = (props) => {
                     {() => (
                         <FormControl key={name}
                                      required={required}
-                                     className={formControlClassNames.join(" ")}
+                                     className={formControlClassNames.join(' ')}
                         >
                             <AutocompleteField name={name}
                                                label={label}
@@ -153,7 +153,7 @@ export const FormField: React.FunctionComponent<FormFieldProps> = (props) => {
                     {() => (
                         <FormControl key={name}
                                      required={required}
-                                     className={formControlClassNames.join(" ")}
+                                     className={formControlClassNames.join(' ')}
                         >
                             <FormControlLabel control={
                                 <Checkbox id={name}
@@ -162,7 +162,7 @@ export const FormField: React.FunctionComponent<FormFieldProps> = (props) => {
                                           required={required}
                                           readOnly={readonly}
                                           onChange={onChange}
-                                          inputProps={{"aria-label": "controlled"}}
+                                          inputProps={{'aria-label': 'controlled'}}
                                 />
                             }
                                               label={label}
@@ -172,7 +172,7 @@ export const FormField: React.FunctionComponent<FormFieldProps> = (props) => {
                 </FastField>
             );
         case ElementTypeEnum.COLLECTION:
-            formControlClassNames.push("col-10");
+            formControlClassNames.push('col-10');
 
             if (props.callbacks !== undefined) {
                 props.callbacks.elements = {};
@@ -181,7 +181,7 @@ export const FormField: React.FunctionComponent<FormFieldProps> = (props) => {
             return (
                 <FastField name={name}>
                     {() => (
-                        <Box key={name + "Collection"} className={"d-flex gap-1 w-100" + elementClassName}>
+                        <Box key={name + 'Collection'} className={'d-flex gap-1 w-100' + elementClassName}>
                             <FormFields form={props.form}
                                         elements={props.element.elements as ElementListType}
                                         parents={[...props.parents, props.element.name]}
@@ -198,7 +198,7 @@ export const FormField: React.FunctionComponent<FormFieldProps> = (props) => {
                     {() => (
                         <FormControl key={name}
                                      required={required}
-                                     className={formControlClassNames.join(" ")}
+                                     className={formControlClassNames.join(' ')}
                         >
                             <DateField label={label}
                                        format={props.element.format}
@@ -221,7 +221,7 @@ export const FormField: React.FunctionComponent<FormFieldProps> = (props) => {
                     {() => (
                         <FormControl key={name}
                                      required={required}
-                                     className={formControlClassNames.join(" ")}
+                                     className={formControlClassNames.join(' ')}
                         >
                             <DateTimeField label={label}
                                            format={props.element.format}
@@ -244,7 +244,7 @@ export const FormField: React.FunctionComponent<FormFieldProps> = (props) => {
                     {() => (
                         <FormControl key={name}
                                      required={required}
-                                     className={formControlClassNames.join(" ")}
+                                     className={formControlClassNames.join(' ')}
                         >
                             <TextField type="file"
                                        name={name}
@@ -264,14 +264,14 @@ export const FormField: React.FunctionComponent<FormFieldProps> = (props) => {
                 </FastField>
             );
         case ElementTypeEnum.HIDDEN:
-            formControlClassNames.push("hidden");
+            formControlClassNames.push('hidden');
 
             return (
                 <FastField name={name}>
                     {() => (
                         <FormControl key={name}
                                      required={required}
-                                     className={formControlClassNames.join(" ")}
+                                     className={formControlClassNames.join(' ')}
                         >
                             <TextField type="hidden"
                                        name={name}
@@ -295,7 +295,7 @@ export const FormField: React.FunctionComponent<FormFieldProps> = (props) => {
                     {() => (
                         <FormControl key={name}
                                      required={required}
-                                     className={formControlClassNames.join(" ")}
+                                     className={formControlClassNames.join(' ')}
                         >
                             {props.value ? props.value : label}
                         </FormControl>
@@ -308,7 +308,7 @@ export const FormField: React.FunctionComponent<FormFieldProps> = (props) => {
                     {() => (
                         <FormControl key={name}
                                      required={required}
-                                     className={formControlClassNames.join(" ")}
+                                     className={formControlClassNames.join(' ')}
                         >
                             <TextField type="number"
                                        name={name}
@@ -333,7 +333,7 @@ export const FormField: React.FunctionComponent<FormFieldProps> = (props) => {
                     {() => (
                         <FormControl key={name}
                                      required={required}
-                                     className={formControlClassNames.join(" ")}
+                                     className={formControlClassNames.join(' ')}
                         >
                             <TextField type="password"
                                        name={name}
@@ -363,7 +363,7 @@ export const FormField: React.FunctionComponent<FormFieldProps> = (props) => {
                         }
 
                         return [null, null];
-                    }
+                    };
 
                     props.callbacks.remove = (key): void => {
                         const [index] = findByKey(key);
@@ -373,13 +373,13 @@ export const FormField: React.FunctionComponent<FormFieldProps> = (props) => {
                         }
 
                         arrayHelpers.remove(index);
-                    }
+                    };
 
                     props.callbacks.get = (key) => {
                         const [_, elementValues] = findByKey(key);
 
                         return elementValues;
-                    }
+                    };
 
                     props.callbacks.set = (key, values): void => {
                         const [index] = findByKey(key);
@@ -395,7 +395,7 @@ export const FormField: React.FunctionComponent<FormFieldProps> = (props) => {
                         } else {
                             arrayHelpers.push(elementValues);
                         }
-                    }
+                    };
 
                     props.callbacks.elements = {};
                 }
@@ -410,7 +410,7 @@ export const FormField: React.FunctionComponent<FormFieldProps> = (props) => {
                     props.renderProps,
                     props.callbacks
                 );
-            }
+            };
 
             return (
                 <FastField name={name}>
@@ -427,7 +427,7 @@ export const FormField: React.FunctionComponent<FormFieldProps> = (props) => {
                     {() => (
                         <FormControl key={name}
                                      required={required}
-                                     className={formControlClassNames.join(" ")}
+                                     className={formControlClassNames.join(' ')}
                         >
                             <TextField type="text"
                                        name={name}
@@ -448,7 +448,7 @@ export const FormField: React.FunctionComponent<FormFieldProps> = (props) => {
         default:
             throw new Exception(`invalid form element type "${props.element.type}" for "${name}"`);
     }
-}
+};
 
 type FormFieldsProps = {
     form: FormType
@@ -473,7 +473,7 @@ export const FormFields: React.FunctionComponent<FormFieldsProps> = (props) => {
                         <FormField key={element.name}
                                    form={props.form}
                                    element={element}
-                                   value={values?.[element.name] !== undefined ? values?.[element.name] : ""}
+                                   value={values?.[element.name] !== undefined ? values?.[element.name] : ''}
                                    renderProps={props.renderProps?.[element.name]}
                                    callbacks={props.callbacks?.[element.name]}
                                    parents={parents}
@@ -483,21 +483,21 @@ export const FormFields: React.FunctionComponent<FormFieldsProps> = (props) => {
             )}
         </>
     );
-}
+};
 
 type FormFieldsContainerProps = React.PropsWithChildren & {
     className?: string
 }
 
 export const FormFieldsContainer: React.FunctionComponent<FormFieldsContainerProps> = (props) => {
-    const classNames: StringArrayType = ["form-fields-container", "d-flex flex-wrap gap-1 align-items-center"];
+    const classNames: StringArrayType = ['form-fields-container', 'd-flex flex-wrap gap-1 align-items-center'];
     if (props.className !== undefined) {
         classNames.push(props.className);
     }
 
     return (
-        <Box className={classNames.join(" ")}>
+        <Box className={classNames.join(' ')}>
             {props.children}
         </Box>
     );
-}
+};

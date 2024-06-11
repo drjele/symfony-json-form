@@ -1,15 +1,15 @@
-"use strict";
+'use strict';
 
+import {AutocompleteInputChangeReason, AutocompleteValue as AutocompleteValueBase} from '@mui/base/AutocompleteUnstyled/useAutocomplete';
+import {Autocomplete as AutocompleteBase, TextField as TextFieldBase} from '@mui/material';
 /** external libraries */
-import React from "react";
-import {AutocompleteInputChangeReason, AutocompleteValue as AutocompleteValueBase} from "@mui/base/AutocompleteUnstyled/useAutocomplete";
-import {Autocomplete as AutocompleteBase, TextField as TextFieldBase} from "@mui/material";
+import React from 'react';
 
 /** internal components */
-import {HttpRequest, HttpRequestTypeEnum, useHttpClient} from "../service/HttpClient";
-import useUrlGenerator from "../service/UrlGenerator";
-import {NullableStringType} from "../type/Scalar";
-import {ElementModeEnum, FieldType, OnChangeAutocompleteType, OnChangeEventType} from "./Types";
+import {HttpRequest, HttpRequestTypeEnum, useHttpClient} from '../service/HttpClient';
+import useUrlGenerator from '../service/UrlGenerator';
+import {NullableStringType} from '../type/Scalar';
+import {ElementModeEnum, FieldType, OnChangeAutocompleteType, OnChangeEventType} from './Types';
 
 type AutocompleteFieldProps = FieldType & {
     mode: ElementModeEnum
@@ -32,7 +32,7 @@ export const AutocompleteField: React.FunctionComponent<AutocompleteFieldProps> 
     const initialValue: AutocompleteValue = multiple ? [] : null;
 
     const [value, setValue] = React.useState<AutocompleteValue>(initialValue);
-    const [inputValue, setInputValue] = React.useState<string>("");
+    const [inputValue, setInputValue] = React.useState<string>('');
     const [options, setOptions] = React.useState<AutocompleteFieldOptionListType>([]);
 
     const httpRequest = React.useRef<HttpRequest>(null);
@@ -45,7 +45,7 @@ export const AutocompleteField: React.FunctionComponent<AutocompleteFieldProps> 
 
         httpRequest.current?.abort();
 
-        if (reason === "reset" && multiple == true) {
+        if (reason === 'reset' && multiple == true) {
             return;
         }
 
@@ -71,12 +71,12 @@ export const AutocompleteField: React.FunctionComponent<AutocompleteFieldProps> 
         }
 
         setOptions([]);
-    }
+    };
 
     React.useEffect(() => {
         if (props.value === null || props.value.length === 0) {
             setValue(initialValue);
-            setInputValue("");
+            setInputValue('');
             setOptions([]);
         }
     }, [props.value]);
@@ -84,7 +84,7 @@ export const AutocompleteField: React.FunctionComponent<AutocompleteFieldProps> 
     const onChange: OnChangeAutocompleteType<AutocompleteFieldOptionType> = (event, value) => {
         setValue(value);
         props.onChange(event as OnChangeEventType, value);
-    }
+    };
 
     /** @todo autofocus */
 
@@ -100,7 +100,7 @@ export const AutocompleteField: React.FunctionComponent<AutocompleteFieldProps> 
             defaultValue={initialValue}
             onChange={onChange}
             onInputChange={onInputChange}
-            getOptionLabel={(option: AutocompleteFieldOptionType) => option ? option.label : ""}
+            getOptionLabel={(option: AutocompleteFieldOptionType) => option ? option.label : ''}
             autoHighlight={true}
             isOptionEqualToValue={(option: AutocompleteFieldOptionType, value: AutocompleteFieldOptionType) => option.id === value.id}
             renderInput={(params) => (
@@ -113,4 +113,4 @@ export const AutocompleteField: React.FunctionComponent<AutocompleteFieldProps> 
             readOnly={props.readonly}
         />
     );
-}
+};
